@@ -34,13 +34,13 @@ class CreateWageScreen extends Component {
         };
     }
 
-    static navigationOptions = {
-        headerTitle: this.props.navigation.getParam(NameHeader, 'Thêm')
-    };
+    // static navigationOptions = {
+    //     headerTitle: this.props.navigation.getParam(NameHeader, 'Thêm')
+    // };
 
     componentDidMount = () => {
         this.setState( {
-            isEdit: this.props.navigation.getParam(isEdit, false)
+            isEdit: this.props.navigation.getParam('isEdit', false)
         })
     }
 

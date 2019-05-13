@@ -57,34 +57,34 @@ class CreatePositionScreen extends Component {
                             <View style={{ width: '50%' }}>
                                 <FormInput
                                     line
-                                    label={'Lương'}
+                                    label={'Phòng'}
                                     textBox
                                     require
                                     onChangeText={(text) => this.setState({ displayName: text })}
                                     value={displayName}
-                                    placeholder={'Tên lương...'}
+                                    placeholder={'Tên phòng...'}
                                 //errorMessage={!displayName || displayName == '' ? null : (validateName(displayName) ? null : 'Tên không hợp lệ')}
                                 />
                             </View>
                         </View>
                         <FormInput
                             line
-                            label={'Lương cơ bản'}
+                            label={'Địa chỉ'}
                             textBox
                             require
                             onChangeText={(text) => this.setState({ address: text })}
                             value={address}
-                            placeholder={'Nhập lương cơ bản...'}
+                            placeholder={'Nhập địa chỉ...'}
                         />
                         <FormInput
                             line
-                            label={'Bậc lương'}
+                            label={'Số điện thoại'}
                             textBox
                             require
                             keyboardType={'phone-pad'}
                             onChangeText={(text) => this.setState({ phone: text })}
                             value={phone}
-                            placeholder={'Nhập bậc lương...'}
+                            placeholder={'Nhập điện thoại...'}
                         //errorMessage={!phone || phone == '' ? null : (validatephoneNumber(phone) ? null : 'Số điện thoại không hợp lệ')}
                         />
                         <View style={[styles.form, styles.formSubmit]}>

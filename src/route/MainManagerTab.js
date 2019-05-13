@@ -95,9 +95,11 @@ const AccountStack = createStackNavigator({
 })
 
 export default createBottomTabNavigator({
-    EmployeeStack: EmployeeStack,
-    WageStack:  WageStack,
-    PositionStack: PositionStack,
-    LevelStack: LevelStack,
-    AccountStack: AccountStack,
+    Employee: EmployeeStack,
+    Wage:  WageStack,
+    Position: {
+        screen: PositionStack
+    },
+    //LevelStack: LevelStack,
+    Account: AccountStack,
 })
