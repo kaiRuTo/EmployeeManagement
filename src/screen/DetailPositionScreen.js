@@ -5,6 +5,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import NavigationService from '../route/NavigationService'
 
 const { width, height } = Dimensions.get('window')
+import { phongbanApi } from '../api'
 
 
 class DetailPositionScreen extends React.Component {
@@ -22,8 +23,8 @@ class DetailPositionScreen extends React.Component {
             <Feather
                 name={'menu'}
                 size={20}
-                style ={{marginRight: 15}}
-                onPress = {() => {
+                style={{ marginRight: 15 }}
+                onPress={() => {
                     NavigationService.navigate('CreatePosition', {
                         'NameHeader': 'Chỉnh sửa',
                         'isEdit': true
@@ -41,7 +42,16 @@ class DetailPositionScreen extends React.Component {
     }
 
     loadData() {
-
+        phongbanApi.detailPhongban()
+            .then(position => {
+                this.setState({
+                    ...this.state,
+                    ...position
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     render() {

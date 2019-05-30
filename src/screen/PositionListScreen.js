@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 
 import NavigationService from '../route/NavigationService'
-
+import {phongbanApi} from '../api'
 const { width, height } = Dimensions.get('window')
 
 const BLUE_COLOR = '#007894'
@@ -20,13 +20,29 @@ export default class PositionListScreen extends Component {
         super(props)
 
         this.state = {
-            employees: [
+            positions: [
                 { 'name': 'Nguyễn Văn A', 'position': 'Designer' },
                 { 'name': 'Nguyễn Văn B', 'position': 'Dev' }
             ]
         }
     }
+    
 
+    componentDidMount = () => {
+        this.loadData()
+    }
+
+    loadData = () => {
+        // phongbanApi.getListPhongban()
+        // .then(list => {
+        //     this.setState({
+        //         positions: list
+        //     })
+        // })
+        // .catch(error => {
+        //     console.log(error)
+        // })
+    }
 
     renderItem = ({ item, index }) => {
         if (index === 0)
@@ -63,11 +79,11 @@ export default class PositionListScreen extends Component {
     }
 
     render() {
-        const { employees } = this.state
+        const { positions } = this.state
         return (
             <SafeAreaView style={styles.container}>
                 <FlatList
-                    data={[{ none: 0 }, ...employees]}
+                    data={[{ none: 0 }, ...positions]}
                     keyExtractor={(item, index) => `${index}`}
                     renderItem={this.renderItem}
                 />

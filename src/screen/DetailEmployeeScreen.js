@@ -5,7 +5,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import NavigationService from '../route/NavigationService'
 
 const { width, height } = Dimensions.get('window')
-
+import { nhanvienApi } from '../api'
 
 class DetailEmployeeScreen extends React.Component {
     constructor(props) {
@@ -23,7 +23,7 @@ class DetailEmployeeScreen extends React.Component {
                 name={'menu'}
                 size={20}
                 style={{ marginRight: 15 }}
-                onPress = {() => {
+                onPress={() => {
                     NavigationService.navigate('CreateEmployee', {
                         'NameHeader': 'Chỉnh sửa',
                         'isEdit': true
@@ -41,7 +41,16 @@ class DetailEmployeeScreen extends React.Component {
     }
 
     loadData() {
-
+        nhanvienApi.detailNhanvien()
+            .then(nv => {
+                this.setState({
+                    ...this.state,
+                    ...nv
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     render() {

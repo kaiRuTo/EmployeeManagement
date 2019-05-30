@@ -27,6 +27,13 @@ export default class LevelListScreen extends Component {
         }
     }
 
+    componentDidMount = () =>{
+        this.loadData()
+    }
+
+    loadData = () => {
+
+    }
 
     renderItem = ({ item, index }) => {
         if (index === 0)

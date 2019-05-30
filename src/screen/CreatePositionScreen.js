@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import { FormInput } from './component'
+import { phongbanApi } from '../api'
 
 const { width, height } = Dimensions.get('window')
 
@@ -38,8 +39,18 @@ class CreatePositionScreen extends Component {
         header: null
     };
 
-    createEmployee() {
-
+    createPosition() {
+        phongbanApi.createPhongban({
+            displayName: this.state.displayName,
+            address: this.state.address,
+            phone: this.state.phone
+        })
+            .then(nv => {
+                this.props.navigation.goBack()
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
 

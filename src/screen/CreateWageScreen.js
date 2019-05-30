@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 import { FormInput } from './component'
-
+import { luongApi } from '../api'
 const { width, height } = Dimensions.get('window')
 
 class CreateWageScreen extends Component {
@@ -39,13 +39,25 @@ class CreateWageScreen extends Component {
     // };
 
     componentDidMount = () => {
-        this.setState( {
+        this.setState({
             isEdit: this.props.navigation.getParam('isEdit', false)
         })
     }
 
-    createEmployee() {
+    createWage() {
+        luongApi.createLuong({
+            displayName: this.state.displayName,
+            basicSalary: this.state.basicSalary,
+            coefficientSalary: this.state.coefficientSalary,
+            levelSalary: this.state.levelSalary,
+        })
+            .then(wage => {
+                this.props.navigation.goBack()
 
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
 

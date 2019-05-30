@@ -5,7 +5,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import NavigationService from '../route/NavigationService'
 
 const { width, height } = Dimensions.get('window')
-
+import { luongApi } from '../api'
 
 class EmployeeDetailScreen extends React.Component {
     constructor(props) {
@@ -41,7 +41,16 @@ class EmployeeDetailScreen extends React.Component {
     }
 
     loadData() {
-
+        luongApi.detailLuong()
+            .then(position => {
+                this.setState({
+                    ...this.state,
+                    ...position
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     render() {

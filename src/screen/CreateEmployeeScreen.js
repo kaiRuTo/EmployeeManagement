@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import { FormInput } from './component'
+import { nhanvienApi } from '../api'
 
 const { width, height } = Dimensions.get('window')
 
@@ -40,7 +41,27 @@ class CreateEmployeeScreen extends Component {
     };
 
     createEmployee() {
+        nhanvienApi.createNhanvien({
+            lastName: this.state.lastName,
+            firstName: this.state.firstName,
+            position: this.state.position,
+            email: this.state.email,
+            phone: this.state.phone,
+            password: this.state.password,
+            confirm: this.state.confirm,
+            userName: this.state.userName,
+            chuyenNganh: this.state.chuyenNganh,
+            trinhDo: this.state.trinhDo,
+            noiDaoTao: this.state.noiDaoTao,
+            bangCap: this.state.bangCap
+        })
+            .then(nv => {
+                this.props.navigation.goBack()
 
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
 
@@ -64,7 +85,7 @@ class CreateEmployeeScreen extends Component {
                                     onChangeText={(text) => this.setState({ firstName: text })}
                                     value={firstName}
                                     placeholder={'Tên nhân viên...'}
-                                    //errorMessage={!firstName || firstName == '' ? null : (validateName(firstName) ? null : 'Tên không hợp lệ')}
+                                //errorMessage={!firstName || firstName == '' ? null : (validateName(firstName) ? null : 'Tên không hợp lệ')}
                                 />
                             </View>
                         </View>
@@ -85,7 +106,7 @@ class CreateEmployeeScreen extends Component {
                             onChangeText={(text) => this.setState({ userName: text })}
                             value={userName}
                             placeholder={'Nhập tên tài khoản...'}
-                            //errorMessage={!userName || userName == '' ? null : (validateSpecialKey(userName) ? null : 'Tên tài khoản không chứa ký tự đặc biệt')}
+                        //errorMessage={!userName || userName == '' ? null : (validateSpecialKey(userName) ? null : 'Tên tài khoản không chứa ký tự đặc biệt')}
                         />
                         <View style={styles.displayInlineBlock}>
                             <View style={{ width: '50%' }}>
@@ -109,7 +130,7 @@ class CreateEmployeeScreen extends Component {
                                     onChangeText={(text) => this.setState({ confirm: text })}
                                     value={confirm}
                                     placeholder={'Xác nhận mật khẩu...'}
-                                    //errorMessage={!confirm || confirm == '' ? null : (confirmPassword(password, confirm) ? null : 'Mật khẩu xác nhận chưa trùng khớp')}
+                                //errorMessage={!confirm || confirm == '' ? null : (confirmPassword(password, confirm) ? null : 'Mật khẩu xác nhận chưa trùng khớp')}
                                 />
                             </View>
                         </View>
@@ -122,7 +143,7 @@ class CreateEmployeeScreen extends Component {
                             onChangeText={(text) => this.setState({ phone: text })}
                             value={phone}
                             placeholder={'Nhập số điện thoại...'}
-                            //errorMessage={!phone || phone == '' ? null : (validatePhoneNumber(phone) ? null : 'Số điện thoại không hợp lệ')}
+                        //errorMessage={!phone || phone == '' ? null : (validatePhoneNumber(phone) ? null : 'Số điện thoại không hợp lệ')}
                         />
                         <FormInput
                             line
@@ -133,7 +154,7 @@ class CreateEmployeeScreen extends Component {
                             onChangeText={(text) => this.setState({ email: text })}
                             value={email}
                             placeholder={'Nhập địa chỉ email'}
-                            //errorMessage={!email || email == '' ? null : (validateEmail(email) ? null : 'Email không hợp lệ')}
+                        //errorMessage={!email || email == '' ? null : (validateEmail(email) ? null : 'Email không hợp lệ')}
                         />
                         <FormInput
                             line
@@ -172,7 +193,7 @@ class CreateEmployeeScreen extends Component {
                             placeholder={'Nhập bằng cấp...'}
                         />
 
-                        
+
 
                         <View style={[styles.form, styles.formSubmit]}>
 

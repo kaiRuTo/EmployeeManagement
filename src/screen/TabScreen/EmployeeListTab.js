@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 
 import NavigationService from '../../route/NavigationService'
-
+import {nhanvienApi} from '../../api'
 const { width, height } = Dimensions.get('window')
 
 const BLUE_COLOR = '#007894'
@@ -27,6 +27,21 @@ export default class EmployeeListTab extends Component {
         }
     }
 
+    componentDidMount = () => {
+        this.loadData()
+    }
+
+    loadData = () => {
+        // nhanvienApi.getListNhanvien()
+        // .then(list => {
+        //     this.setState({
+        //         employees: list
+        //     })
+        // })
+        // .catch(error => {
+        //     console.log(error)
+        // })
+    }
 
     renderItem = ({ item, index }) => {
         if (index === 0)
