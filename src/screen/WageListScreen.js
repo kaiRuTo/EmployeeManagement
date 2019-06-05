@@ -49,7 +49,9 @@ export default class WageListScreen extends Component {
                 <View style={[styles.AddingCard]}>
                     <TouchableOpacity style={[styles.displayInlineBlock, styles.add, ]}
                         onPress={()=>{
-                            NavigationService.navigate('CreateWage')
+                            NavigationService.navigate('CreateWage', {
+                                id: item._id
+                            })
                         }}>
                         <Text style={{ color: BLUE_COLOR, fontSize: 16, fontWeight: 'bold'}}>Thêm bậc lương</Text>
                     </TouchableOpacity>
@@ -69,6 +71,7 @@ export default class WageListScreen extends Component {
                     <View style={{ flex: 1, height: '100%', justifyContent: 'space-between' }}>
                         <View />
                         <Text>{item.BacLuong}</Text>
+                        <Text>{item.LuongCB}</Text>
                         <View />
                     </View>
                 </View>

@@ -26,8 +26,8 @@ class CreateEmployeeScreen extends Component {
         super(props);
         this.state = {
             lastName: '',
-            firstName: '',
-            NgaySinh: '',
+            HoTen: '',
+            NgaySinh: Moment(),
             position: '',
             DanToc: '',
             QueQuan: '',
@@ -54,6 +54,8 @@ class CreateEmployeeScreen extends Component {
         this.loadPhongBan()
         this.loadTrinhdohocvan()
         this.loadBacluong()
+        if (this.props.navigation.getParam('isEdit', false))
+            this.loadNhanView()
     }
 
     showDateTimePicker = () => {
@@ -70,6 +72,19 @@ class CreateEmployeeScreen extends Component {
     static navigationOptions = {
         header: null
     };
+
+    loadNhanView() {
+        nhanvienApi.detailItem(this.props.navigation.getParam('id'))
+            .then(list => {
+                this.setState({
+                    ...this.state,
+                    ...list[0]
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
 
     loadCV = () => {
         chucvuApi.getListItem()
@@ -122,8 +137,7 @@ class CreateEmployeeScreen extends Component {
 
     createEmployee() {
         nhanvienApi.createItem({
-            MaNV: 2,
-            HoTen: this.state.firstName,
+            HoTen: this.state.HoTen,
             NgaySinh: this.state.NgaySinh,
             // position: this.state.position,
             SoDienThoai: this.state.SoDienThoai,
@@ -146,10 +160,35 @@ class CreateEmployeeScreen extends Component {
             })
     }
 
+    updateEmployee() {
+        nhanvienApi.updateItem({
+            _id: this.state._id,
+            HoTen: this.state.HoTen,
+            NgaySinh: this.state.NgaySinh,
+            // position: this.state.position,
+            SoDienThoai: this.state.SoDienThoai,
+            QueQuan: this.state.QueQuan,
+            GioiTinh: 'Nam',
+            DanToc: this.state.DanToc,
+            // password: this.state.password,
+            // userName: this.state.userName,
+            MaCV: this.state.MaCV,
+            MaPB: this.state.MaPB,
+            MaTDHV: this.state.MaTDHV,
+            BacLuong: parseInt(this.state.BacLuong)
+        })
+            .then(nv => {
+                this.props.navigation.navigate('Employee')
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
 
 
     render() {
-        const { lastName, firstName, email, position, img, SoDienThoai, userName, password, confirm,
+        const { lastName, HoTen, email, position, img, SoDienThoai, userName, password, confirm,
             NgaySinh,
             QueQuan,
             DanToc,
@@ -169,10 +208,10 @@ class CreateEmployeeScreen extends Component {
                                     label={'Họ & Tên'}
                                     textBox
                                     require
-                                    onChangeText={(text) => this.setState({ firstName: text })}
-                                    value={firstName}
+                                    onChangeText={(text) => this.setState({ HoTen: text })}
+                                    value={HoTen}
                                     placeholder={'Tên nhân viên...'}
-                                //errorMessage={!firstName || firstName == '' ? null : (validateName(firstName) ? null : 'Tên không hợp lệ')}
+                                //errorMessage={!HoTen || HoTen == '' ? null : (validateName(HoTen) ? null : 'Tên không hợp lệ')}
                                 />
                             </View>
                         </View>
@@ -202,15 +241,6 @@ class CreateEmployeeScreen extends Component {
                             onChangeText={(text) => this.setState({ DanToc: text })}
                             value={DanToc}
                             placeholder={'Nhập dân tộc...'}
-                        />
-                        <FormInput
-                            line
-                            label={'Phòng ban'}
-                            textBox
-                            require
-                            onChangeText={(text) => this.setState({ position: text })}
-                            value={position}
-                            placeholder={'Nhập chức vụ...'}
                         />
                         <FormInput
                             line
@@ -311,7 +341,9 @@ class CreateEmployeeScreen extends Component {
                         <View style={[styles.form, styles.formSubmit]}>
                             <TouchableOpacity
                                 onPress={() => {
-                                    this.createEmployee()
+                                    if (this.props.navigation.getParam('isEdit', false))
+                                        this.updateEmployee()
+                                    else this.createEmployee()
                                 }}
                             >
                                 <Text>Thêm</Text>

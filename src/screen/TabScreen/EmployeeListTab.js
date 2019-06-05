@@ -58,7 +58,9 @@ export default class EmployeeListTab extends Component {
         return (
             <TouchableOpacity
                 onPress={() => {
-                    NavigationService.navigate('DetailEmployee')
+                    NavigationService.navigate('DetailEmployee', {
+                        id: item._id
+                    })
                 }}
                 style={{ alignSelf: 'center' }}
             >

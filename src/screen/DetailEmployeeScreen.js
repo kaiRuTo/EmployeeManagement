@@ -1,9 +1,10 @@
 import React from 'react'
-import { ScrollView, StyleSheet, View, Platform, Image, Text, SafeAreaView, StatusBar, Dimensions } from 'react-native';
+import { ScrollView, StyleSheet, View, Platform, Image, TouchableOpacity, Text, SafeAreaView, StatusBar, Dimensions } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
 import NavigationService from '../route/NavigationService'
 
+import Moment from 'moment'
 const { width, height } = Dimensions.get('window')
 import { nhanvienApi } from '../api'
 
@@ -13,7 +14,7 @@ class DetailEmployeeScreen extends React.Component {
         this.state = {
             displayName: 'Name',
             image: 'https://firebasestorage.googleapis.com/v0/b/HairSalon-beauty-app.appspot.com/o/Images%2Favocado-face-mask.jpg?alt=media&token=5bb4d5a4-924e-420f-a044-f7dd3a998622',
-            position: 'position',
+            MaCV: 'MaCV',
         };
     }
 
@@ -26,7 +27,7 @@ class DetailEmployeeScreen extends React.Component {
                 onPress={() => {
                     NavigationService.navigate('CreateEmployee', {
                         'NameHeader': 'Chỉnh sửa',
-                        'isEdit': true
+                        'isEdit': true,
                     })
                 }}
             />
@@ -41,11 +42,13 @@ class DetailEmployeeScreen extends React.Component {
     }
 
     loadData() {
-        nhanvienApi.detailItem()
+        nhanvienApi.detailItem(this.props.navigation.getParam('id'))
             .then(nv => {
                 this.setState({
                     ...this.state,
-                    ...nv
+                    ...nv[0]
+                }, () => {
+                    console.log(nv, this.state)
                 })
             })
             .catch(error => {
@@ -56,17 +59,17 @@ class DetailEmployeeScreen extends React.Component {
     render() {
         const {
             id = '',
-            firstName = '',
+            HoTen = '',
             lastName = '',
-            position = '',
-            birthday = '',
+            MaCV = '',
+            NgaySinh = '',
+            DanToc = '',
             userName = '',
-            hometown = '',
-            address = '',
-            identification = '',
-            phone = '',
-            email = ''
-        } = this.props
+            QueQuan = '',
+            SoDienThoai = '',
+            email = '',
+            MaPB = ''
+        } = this.state
         const { image } = this.state
         return (
             <SafeAreaView style={{ flex: 1 }}>
@@ -76,10 +79,10 @@ class DetailEmployeeScreen extends React.Component {
                             <View style={{ flex: 1, alignItems: 'center' }}>
                                 {/* <UserAvatar /> */}
                                 <Text style={[styles.text, styles.textBold, { color: 'black' }]}>
-                                    {`${firstName || 'Tên'} ${lastName || ''}`}
+                                    {`${HoTen || 'Tên'}`}
                                 </Text>
                                 <Text style={styles.text}>
-                                    {position || 'Vị trí'}
+                                    {MaCV || 'Vị trí'}
                                 </Text>
                             </View>
                         </View>
@@ -91,26 +94,36 @@ class DetailEmployeeScreen extends React.Component {
                                 Tài khoản: {userName || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
                             </Text>
                             <Text style={styles.text}>
-                                Chức vụ: {position || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                                Chức vụ: {MaCV || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
                             </Text>
                             <Text style={styles.text}>
-                                Năm sinh: {birthday || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                                Năm sinh: {Moment(NgaySinh).format('DD/MM/YYYY') || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
                             </Text>
                             <Text style={styles.text}>
-                                Quê quán: {hometown || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                                Quê quán: {QueQuan || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
                             </Text>
                             <Text style={styles.text}>
-                                Chỗ ở hiện tại: {address || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                                Điện thoại: {SoDienThoai || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
                             </Text>
                             <Text style={styles.text}>
-                                Căn cước/ CMND: {identification || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                                Dân tộc: {DanToc || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
                             </Text>
                             <Text style={styles.text}>
-                                Điện thoại: {phone || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                                Phòng: {MaPB || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
                             </Text>
-                            <Text style={styles.text}>
-                                Email: {email || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
-                            </Text>
+                        </View>
+                        <View style={[styles.containerBody]}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    NavigationService.navigate('CreateEmployee', {
+                                        'NameHeader': 'Chỉnh sửa',
+                                        'isEdit': true,
+                                        'id': this.state._id
+                                    })
+                                }}
+                            >
+                                <Text>Thêm</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </ScrollView>

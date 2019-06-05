@@ -40,12 +40,12 @@ class EmployeeDetailScreen extends React.Component {
         this.loadData()
     }
 
-    loadData() {
-        luongApi.detailItem()
+    loadData = () => {
+        luongApi.detailItem(this.props.navigation.getParam('id'))
             .then(position => {
                 this.setState({
                     ...this.state,
-                    ...position
+                    ...position[0]
                 })
             })
             .catch(error => {

@@ -69,8 +69,8 @@ export default class PositionListScreen extends Component {
                     /> */}
                     <View style={{ flex: 1, height: '100%', justifyContent: 'space-between' }}>
                         <View />
-                        <Text>{item.name}</Text>
-                        <Text>{item.position}</Text>
+                        <Text>{item.TenPB}</Text>
+                        <Text>{item.SDTPB}</Text>
                         <View />
                     </View>
                 </View>
