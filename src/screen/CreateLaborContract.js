@@ -7,67 +7,79 @@ import {
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
-    Text,
     TextInput,
     Dimensions
 } from 'react-native';
 
+import DateTimePicker from 'react-native-modal-datetime-picker'
+import Moment from 'moment'
+import { Dropdown } from 'react-native-material-dropdown'
+
 import { FormInput } from './component'
-import { luongApi } from '../api'
+import { phongbanApi } from '../api'
+
 const { width, height } = Dimensions.get('window')
 
-class CreateWageScreen extends Component {
+class CreateLaborContract extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            lastName: '',
             displayName: '',
-            basicSalary: '',
+            fromDate: '',
             img: '',
-            levelSalary: '',
-            password: '',
-            confirm: '',
-            coefficientSalary: '',
-            chuyenNganh: '',
-            trinhDo: '',
-            noiDaoTao: '',
-            bangCap: ''
+            toDate: '',
+
+            isFromDateDateTimePickerVisible: false,
+            isToDateDateTimePickerVisible: false
         };
     }
 
-    // static navigationOptions = {
-    //     headerTitle: this.props.navigation.getParam(NameHeader, 'Thêm')
-    // };
+    static navigationOptions = {
+        header: null
+    };
 
-    componentDidMount = () => {
-        this.setState({
-            isEdit: this.props.navigation.getParam('isEdit', false)
+    createPosition() {
+        phongbanApi.createItem({
+            displayName: this.state.displayName,
+            address: this.state.address,
+            phone: this.state.phone
         })
-    }
-
-    createWage() {
-        luongApi.createItem({
-            BacLuong: parseInt(this.state.displayName),
-            LuongCB: parseInt(this.state.basicSalary),
-            HSLuong: parseFloat(this.state.coefficientSalary),
-            HSPhuCap: parseFloat(this.state.levelSalary),
-        })
-            .then(wage => {
+            .then(nv => {
                 this.props.navigation.goBack()
-
             })
             .catch(error => {
                 console.log(error)
             })
     }
 
+    showFromDateDateTimePicker = () => {
+        this.setState({ isFromDateDateTimePickerVisible: !this.state.isFromDateDateTimePickerVisible });
+    };
+
+    handleFromDateDatePicked = date => {
+        this.setState({
+            fromDate: date
+        });
+        this.showFromDateDateTimePicker();
+    };
+
+    showToDateDateTimePicker = () => {
+        this.setState({ isToDateDateTimePickerVisible: !this.state.isToDateDateTimePickerVisible });
+    };
+
+    handleToDateDatePicked = date => {
+        this.setState({
+            toDate: date
+        });
+        this.showToDateDateTimePicker();
+    };
+
 
     render() {
-        const { lastName, displayName, basicSalary, img, levelSalary, coefficientSalary, password, confirm,
-            chuyenNganh,
-            trinhDo,
-            noiDaoTao,
-            bangCap } = this.state;
+        const { displayName,
+            fromDate,
+            toDate
+        } = this.state;
         return (
             <SafeAreaView style={styles.container}>
                 <ScrollView showsVerticalScrollIndicator={false} style={[styles.container, { paddingTop: 10 }]}>
@@ -76,57 +88,48 @@ class CreateWageScreen extends Component {
                             <View style={{ width: '50%' }}>
                                 <FormInput
                                     line
-                                    label={'Lương'}
+                                    label={'Phòng'}
                                     textBox
                                     require
                                     onChangeText={(text) => this.setState({ displayName: text })}
                                     value={displayName}
-                                    placeholder={'Tên lương...'}
+                                    placeholder={'Tên phòng...'}
                                 //errorMessage={!displayName || displayName == '' ? null : (validateName(displayName) ? null : 'Tên không hợp lệ')}
                                 />
                             </View>
                         </View>
                         <FormInput
                             line
-                            label={'Lương cơ bản'}
+                            label={'Từ ngày'}
                             textBox
                             require
-                            onChangeText={(text) => this.setState({ basicSalary: text })}
-                            value={basicSalary}
-                            placeholder={'Nhập lương cơ bản...'}
+                            onFocus={this.showFromDateDateTimePicker}
+                            value={fromDate}
                         />
                         <FormInput
                             line
-                            label={'Hệ số lương'}
+                            label={'Đến ngày'}
                             textBox
                             require
-                            onChangeText={(text) => this.setState({ coefficientSalary: text })}
-                            value={coefficientSalary}
-                            placeholder={'Nhập hệ số lương...'}
-                        //errorMessage={!coefficientSalary || coefficientSalary == '' ? null : (validateSpecialKey(coefficientSalary) ? null : 'Tên tài khoản không chứa ký tự đặc biệt')}
-                        />
-                        <FormInput
-                            line
-                            label={'Hệ số phụ cấp'}
-                            textBox
-                            require
-                            keyboardType={'number-pad'}
-                            onChangeText={(text) => this.setState({ levelSalary: text })}
-                            value={levelSalary}
-                            placeholder={'Hệ số phụ cấp...'}
-                        //errorMessage={!levelSalary || levelSalary == '' ? null : (validatelevelSalaryNumber(levelSalary) ? null : 'Số điện thoại không hợp lệ')}
+                            onFocus={this.showToDateDateTimePicker}
+                            value={toDate}
+                        //errorMessage={!phone || phone == '' ? null : (validatephoneNumber(phone) ? null : 'Số điện thoại không hợp lệ')}
                         />
                         <View style={[styles.form, styles.formSubmit]}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.createWage()
-                                }}
-                            >
-                                <Text>Thêm</Text>
-                            </TouchableOpacity>
+
                         </View>
                     </View>
                 </ScrollView>
+                <DateTimePicker
+                    isVisible={this.state.isFromDateDateTimePickerVisible}
+                    onConfirm={this.handleFromDateDatePicked}
+                    onCancel={this.showFromDateDateTimePicker}
+                />
+                <DateTimePicker
+                    isVisible={this.state.isToDateDateTimePickerVisible}
+                    onConfirm={this.handleToDateDatePicked}
+                    onCancel={this.showToDateDateTimePicker}
+                />
             </SafeAreaView>
         );
     }
@@ -175,4 +178,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CreateWageScreen
+export default CreateLaborContract

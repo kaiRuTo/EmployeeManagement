@@ -32,15 +32,15 @@ export default class EmployeeListTab extends Component {
     }
 
     loadData = () => {
-        // nhanvienApi.getListNhanvien()
-        // .then(list => {
-        //     this.setState({
-        //         employees: list
-        //     })
-        // })
-        // .catch(error => {
-        //     console.log(error)
-        // })
+        nhanvienApi.getListItem()
+        .then(list => {
+            this.setState({
+                employees: list
+            })
+        })
+        .catch(error => {
+            console.log(error)
+        })
     }
 
     renderItem = ({ item, index }) => {
@@ -68,8 +68,8 @@ export default class EmployeeListTab extends Component {
                     /> */}
                     <View style={{ flex: 1, height: '100%', justifyContent: 'space-between' }}>
                         <View />
-                        <Text>{item.name}</Text>
-                        <Text>{item.position}</Text>
+                        <Text>{item.HoTen}</Text>
+                        <Text>{item.MaPB}</Text>
                         <View />
                     </View>
                 </View>

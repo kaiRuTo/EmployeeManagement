@@ -7,12 +7,17 @@ import {
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
+    Text,
     TextInput,
     Dimensions
 } from 'react-native';
-
+import DateTimePicker from 'react-native-modal-datetime-picker'
+import Moment from 'moment'
+import { Dropdown } from 'react-native-material-dropdown'
+import _ from 'lodash'
 import { FormInput } from './component'
-import { nhanvienApi } from '../api'
+import { nhanvienApi, chucvuApi, phongbanApi, trinhdohocvanApi, luongApi } from '../api'
+
 
 const { width, height } = Dimensions.get('window')
 
@@ -22,38 +27,115 @@ class CreateEmployeeScreen extends Component {
         this.state = {
             lastName: '',
             firstName: '',
+            NgaySinh: '',
             position: '',
+            DanToc: '',
+            QueQuan: '',
             img: '',
             email: '',
-            phone: '',
+            SoDienThoai: '',
             password: '',
             confirm: '',
             userName: '',
-            chuyenNganh: '',
-            trinhDo: '',
-            noiDaoTao: '',
-            bangCap: ''
+            MaCV: '',
+            MaPB: '',
+            MaTDHV: '',
+            BacLuong: '',
+            listCV: [],
+            listPB: [],
+            listTDHV: [],
+            listBacLuong: [],
+            isDateTimePickerVisible: false
         };
     }
+
+    componentDidMount = () => {
+        this.loadCV()
+        this.loadPhongBan()
+        this.loadTrinhdohocvan()
+        this.loadBacluong()
+    }
+
+    showDateTimePicker = () => {
+        this.setState({ isDateTimePickerVisible: !this.state.isDateTimePickerVisible });
+    };
+
+    handleDatePicked = date => {
+        this.setState({
+            NgaySinh: date
+        });
+        this.showDateTimePicker();
+    };
 
     static navigationOptions = {
         header: null
     };
 
+    loadCV = () => {
+        chucvuApi.getListItem()
+            .then(list => {
+                this.setState({
+                    listCV: list
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    loadPhongBan = () => {
+        phongbanApi.getListItem()
+            .then(list => {
+                this.setState({
+                    listPB: list
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    loadTrinhdohocvan = () => {
+        trinhdohocvanApi.getListItem()
+            .then(list => {
+                this.setState({
+                    listTDHV: list
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    loadBacluong = () => {
+        luongApi.getListItem()
+            .then(list => {
+                this.setState({
+                    listBacLuong: list
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+
     createEmployee() {
-        nhanvienApi.createNhanvien({
-            lastName: this.state.lastName,
-            firstName: this.state.firstName,
-            position: this.state.position,
-            email: this.state.email,
-            phone: this.state.phone,
-            password: this.state.password,
-            confirm: this.state.confirm,
-            userName: this.state.userName,
-            chuyenNganh: this.state.chuyenNganh,
-            trinhDo: this.state.trinhDo,
-            noiDaoTao: this.state.noiDaoTao,
-            bangCap: this.state.bangCap
+        nhanvienApi.createItem({
+            MaNV: 2,
+            HoTen: this.state.firstName,
+            NgaySinh: this.state.NgaySinh,
+            // position: this.state.position,
+            SoDienThoai: this.state.SoDienThoai,
+            QueQuan: this.state.QueQuan,
+            GioiTinh: 'Nam',
+            DanToc: this.state.DanToc,
+            // password: this.state.password,
+            // userName: this.state.userName,
+            MaCV: this.state.MaCV,
+            MaPB: this.state.MaPB,
+            MaTDHV: this.state.MaTDHV,
+            BacLuong: parseInt(this.state.BacLuong)
         })
             .then(nv => {
                 this.props.navigation.goBack()
@@ -65,12 +147,17 @@ class CreateEmployeeScreen extends Component {
     }
 
 
+
     render() {
-        const { lastName, firstName, email, position, img, phone, userName, password, confirm,
-            chuyenNganh,
-            trinhDo,
-            noiDaoTao,
-            bangCap } = this.state;
+        const { lastName, firstName, email, position, img, SoDienThoai, userName, password, confirm,
+            NgaySinh,
+            QueQuan,
+            DanToc,
+            MaCV,
+            MaPB,
+            MaTDHV,
+            BacLuong } = this.state;
+        console.log(this.state)
         return (
             <SafeAreaView style={styles.container}>
                 <ScrollView showsVerticalScrollIndicator={false} style={[styles.container, { paddingTop: 10 }]}>
@@ -89,6 +176,33 @@ class CreateEmployeeScreen extends Component {
                                 />
                             </View>
                         </View>
+                        <FormInput
+                            line
+                            label={'Ngày sinh'}
+                            textBox
+                            require
+                            onFocus={this.showDateTimePicker}
+                            value={Moment(NgaySinh).format('DD/MM/YYYY')}
+                            placeholder={'Nhập chức vụ...'}
+                        />
+                        <FormInput
+                            line
+                            label={'Quê Quán'}
+                            textBox
+                            require
+                            onChangeText={(text) => this.setState({ QueQuan: text })}
+                            value={QueQuan}
+                            placeholder={'Nhập quê quán...'}
+                        />
+                        <FormInput
+                            line
+                            label={'Dân tộc'}
+                            textBox
+                            require
+                            onChangeText={(text) => this.setState({ DanToc: text })}
+                            value={DanToc}
+                            placeholder={'Nhập dân tộc...'}
+                        />
                         <FormInput
                             line
                             label={'Phòng ban'}
@@ -140,66 +254,76 @@ class CreateEmployeeScreen extends Component {
                             textBox
                             require
                             keyboardType={'phone-pad'}
-                            onChangeText={(text) => this.setState({ phone: text })}
-                            value={phone}
+                            onChangeText={(text) => this.setState({ SoDienThoai: text })}
+                            value={SoDienThoai}
                             placeholder={'Nhập số điện thoại...'}
                         //errorMessage={!phone || phone == '' ? null : (validatePhoneNumber(phone) ? null : 'Số điện thoại không hợp lệ')}
                         />
-                        <FormInput
-                            line
-                            require
-                            label={'Email'}
-                            textBox
-                            keyboardType={'email-address'}
-                            onChangeText={(text) => this.setState({ email: text })}
-                            value={email}
-                            placeholder={'Nhập địa chỉ email'}
-                        //errorMessage={!email || email == '' ? null : (validateEmail(email) ? null : 'Email không hợp lệ')}
-                        />
-                        <FormInput
-                            line
-                            label={'Chuyên ngành'}
-                            textBox
-                            require
-                            onChangeText={(text) => this.setState({ chuyenNganh: text })}
-                            value={chuyenNganh}
-                            placeholder={'Nhập chuyên ngành...'}
-                        />
-                        <FormInput
-                            line
-                            label={'Trình đô'}
-                            textBox
-                            require
-                            onChangeText={(text) => this.setState({ trinhDo: text })}
-                            value={trinhDo}
-                            placeholder={'Nhập trình độ...'}
-                        />
-                        <FormInput
-                            line
-                            label={'Nơi đào tạo'}
-                            textBox
-                            require
-                            onChangeText={(text) => this.setState({ noiDaoTao: text })}
-                            value={noiDaoTao}
-                            placeholder={'Nhập nơi đào tạo...'}
-                        />
-                        <FormInput
-                            line
-                            label={'Bằng cấp'}
-                            textBox
-                            require
-                            onChangeText={(text) => this.setState({ bangCap: text })}
-                            value={bangCap}
-                            placeholder={'Nhập bằng cấp...'}
-                        />
 
-
-
+                        <Dropdown
+                            label='Chức vụ'
+                            data={_.map(this.state.listCV, function (item) {
+                                return { 'value': item.TenCV }
+                            })}
+                            value={MaCV}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    MaCV: text,
+                                })
+                            }}
+                        />
+                        <Dropdown
+                            label='Phòng ban'
+                            data={_.map(this.state.listPB, function (item) {
+                                return { 'value': item.TenPB }
+                            })}
+                            value={MaPB}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    MaPB: text,
+                                })
+                            }}
+                        />
+                        <Dropdown
+                            label='Trình độ học vấn'
+                            data={_.map(this.state.listTDHV, function (item) {
+                                return { 'value': item.TenTDHV }
+                            })}
+                            value={MaTDHV}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    MaTDHV: text,
+                                })
+                            }}
+                        />
+                        <Dropdown
+                            label='Bậc lương'
+                            data={_.map(this.state.listBacLuong, function (item) {
+                                return { 'value': item.LuongCB }
+                            })}
+                            value={BacLuong}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    BacLuong: text,
+                                })
+                            }}
+                        />
                         <View style={[styles.form, styles.formSubmit]}>
-
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.createEmployee()
+                                }}
+                            >
+                                <Text>Thêm</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </ScrollView>
+                <DateTimePicker
+                    isVisible={this.state.isDateTimePickerVisible}
+                    onConfirm={this.handleDatePicked}
+                    onCancel={this.showDateTimePicker}
+                />
             </SafeAreaView>
         );
     }

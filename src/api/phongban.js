@@ -1,21 +1,21 @@
 import callApi from './helperApi'
 
-export const getListPhongban = () =>{
-    return callApi('./list/_phongban')
+export const getListItem = () =>{
+    return callApi('/list/phongban')
 }
 
-export const createPhongban = () =>{
-    return callApi('./create/_phongban')
+export const createItem = data =>{
+    return callApi('/create/phongban', 'POST', JSON.stringify(data))
 }
 
-export const updatePhongban = () =>{
-    return callApi('./update/_phongban')
+export const updateItem = data =>{
+    return callApi('/update/phongban', 'POST', JSON.stringify(data))
 }
 
-export const deletePhongban = () =>{
-    return callApi('./delete/_phongban')
+export const deleteItem = () =>{
+    return callApi('/delete/phongban')
 }
 
-export const detailPhongban = () =>{
-    return callApi('./detail/_phongban')
+export const detailItem = () =>{
+    return callApi('/detail/phongban')
 }

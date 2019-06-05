@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 
 import NavigationService from '../route/NavigationService'
-import {phongbanApi} from '../api'
+import { phongbanApi } from '../api'
 const { width, height } = Dimensions.get('window')
 
 const BLUE_COLOR = '#007894'
@@ -26,33 +26,33 @@ export default class PositionListScreen extends Component {
             ]
         }
     }
-    
+
 
     componentDidMount = () => {
         this.loadData()
     }
 
     loadData = () => {
-        // phongbanApi.getListPhongban()
-        // .then(list => {
-        //     this.setState({
-        //         positions: list
-        //     })
-        // })
-        // .catch(error => {
-        //     console.log(error)
-        // })
+        phongbanApi.getListItem()
+            .then(list => {
+                this.setState({
+                    positions: list
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     renderItem = ({ item, index }) => {
         if (index === 0)
             return (
                 <View style={[styles.AddingCard]}>
-                    <TouchableOpacity style={[styles.displayInlineBlock, styles.add, ]}
-                        onPress={()=>{
+                    <TouchableOpacity style={[styles.displayInlineBlock, styles.add,]}
+                        onPress={() => {
                             NavigationService.navigate('CreatePosition')
                         }}>
-                        <Text style={{ color: BLUE_COLOR, fontSize: 16, fontWeight: 'bold'}}>Thêm phòng ban</Text>
+                        <Text style={{ color: BLUE_COLOR, fontSize: 16, fontWeight: 'bold' }}>Thêm phòng ban</Text>
                     </TouchableOpacity>
                 </View>
             )

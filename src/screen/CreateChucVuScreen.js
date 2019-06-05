@@ -7,37 +7,42 @@ import {
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
+    Text,
     TextInput,
     Dimensions
 } from 'react-native';
 
 import { FormInput } from './component'
-import { phongbanApi } from '../api'
-
+import { chucvuApi } from '../api'
 const { width, height } = Dimensions.get('window')
 
-class CreatePositionScreen extends Component {
+class CreateChucVuScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            TenPB: '',
-            DiaChi: '',
-            SDTPB: ''
+            MaCV: '',
+            TenCV: '',
         };
     }
 
-    static navigationOptions = {
-        header: null
-    };
+    // static navigationOptions = {
+    //     headerTitle: this.props.navigation.getParam(NameHeader, 'Thêm')
+    // };
 
-    createPosition() {
-        phongbanApi.createItem({
-            TenPB: this.state.TenPB,
-            DiaChi: this.state.DiaChi,
-            SDTPB: this.state.SDTPB
+    componentDidMount = () => {
+        this.setState({
+            isEdit: this.props.navigation.getParam('isEdit', false)
         })
-            .then(nv => {
+    }
+
+    createChucVu() {
+        chucvuApi.createItem({
+            MaCV: this.state.MaCV,
+            TenCV: this.state.TenCV
+        })
+            .then(wage => {
                 this.props.navigation.goBack()
+
             })
             .catch(error => {
                 console.log(error)
@@ -46,47 +51,41 @@ class CreatePositionScreen extends Component {
 
 
     render() {
-        const { TenPB, DiaChi, SDTPB } = this.state;
+        const { MaCV, TenCV } = this.state;
         return (
             <SafeAreaView style={styles.container}>
                 <ScrollView showsVerticalScrollIndicator={false} style={[styles.container, { paddingTop: 10 }]}>
                     <View style={styles.containerBody}>
                         <View style={styles.displayInlineBlock}>
-                            <View style={{ width: '50%' }}>
-                                <FormInput
-                                    line
-                                    label={'Phòng'}
-                                    textBox
-                                    require
-                                    onChangeText={(text) => this.setState({ TenPB: text })}
-                                    value={TenPB}
-                                    placeholder={'Tên phòng...'}
-                                //errorMessage={!TenPB || TenPB == '' ? null : (validateName(TenPB) ? null : 'Tên không hợp lệ')}
-                                />
-                            </View>
+                            <FormInput
+                                line
+                                label={'Lương'}
+                                textBox
+                                require
+                                onChangeText={(text) => this.setState({ displayName: text })}
+                                value={displayName}
+                                placeholder={'Tên lương...'}
+                            //errorMessage={!displayName || displayName == '' ? null : (validateName(displayName) ? null : 'Tên không hợp lệ')}
+                            />
+
                         </View>
                         <FormInput
                             line
-                            label={'Địa chỉ'}
+                            label={'Lương cơ bản'}
                             textBox
                             require
-                            onChangeText={(text) => this.setState({ DiaChi: text })}
-                            value={DiaChi}
-                            placeholder={'Nhập địa chỉ...'}
-                        />
-                        <FormInput
-                            line
-                            label={'Số điện thoại'}
-                            textBox
-                            require
-                            keyboardType={'phone-pad'}
-                            onChangeText={(text) => this.setState({ SDTPB: text })}
-                            value={SDTPB}
-                            placeholder={'Nhập điện thoại...'}
-                        //errorMessage={!phone || phone == '' ? null : (validatephoneNumber(phone) ? null : 'Số điện thoại không hợp lệ')}
+                            onChangeText={(text) => this.setState({ TenCV: text })}
+                            value={TenCV}
+                            placeholder={'Nhập lương cơ bản...'}
                         />
                         <View style={[styles.form, styles.formSubmit]}>
-
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.createChucVu()
+                                }}
+                            >
+                                <Text>Thêm</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </ScrollView>
@@ -138,4 +137,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CreatePositionScreen
+export default CreateChucVuScreen

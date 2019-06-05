@@ -42,7 +42,7 @@ class DetailPositionScreen extends React.Component {
     }
 
     loadData() {
-        phongbanApi.detailPhongban()
+        phongbanApi.detailItem()
             .then(position => {
                 this.setState({
                     ...this.state,

@@ -1,20 +1,20 @@
 import callApi from './helperApi'
 
-export const getListLuong = () =>{
-    return callApi('./list/_luong')
+export const getListItem = () =>{
+    return callApi('/list/luong')
 }
 
-export const createLuong = data =>{
-    return callApi('./create/_luong', 'POST', data)
+export const createItem = data =>{
+    return callApi('/create/luong', 'POST', JSON.stringify(data))
 }
 
-export const updateLuong = () =>{
-    return callApi('./update/_luong')
+export const updateItem = (data) =>{
+    return callApi('/update/luong', 'PUT', JSON.stringify(data))
 }
 
-export const deleteLuong = () =>{
-    return callApi('./delete/_luong')
+export const deleteItem = () =>{
+    return callApi('/delete/luong')
 }
-export const detailLuong = () =>{
-    return callApi('./detail/_luong')
+export const detailItem = () =>{
+    return callApi('/detail/luong')
 }

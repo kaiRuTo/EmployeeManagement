@@ -41,7 +41,7 @@ class EmployeeDetailScreen extends React.Component {
     }
 
     loadData() {
-        luongApi.detailLuong()
+        luongApi.detailItem()
             .then(position => {
                 this.setState({
                     ...this.state,

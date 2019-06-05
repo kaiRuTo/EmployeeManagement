@@ -40,7 +40,7 @@ class CreateLevelScreen extends Component {
     };
 
     createLevel() {
-        nhanvienApi.createNhanvien({
+        nhanvienApi.createItem({
             lastName: this.state.lastName,
             firstName: this.state.firstName,
             position: this.state.position,

@@ -10,17 +10,17 @@ import {
 } from 'react-native'
 
 import NavigationService from '../route/NavigationService'
-import {luongApi} from '../api'
+import { chucvuApi } from '../api'
 const { width, height } = Dimensions.get('window')
 
 const BLUE_COLOR = '#007894'
 
-export default class WageListScreen extends Component {
+export default class ChucVuListScreen extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            wages: [
+            chucvu: [
                 { 'name': 'Nguyễn Văn A', 'position': 'Designer' },
                 { 'name': 'Nguyễn Văn B', 'position': 'Dev' }
             ]
@@ -32,26 +32,26 @@ export default class WageListScreen extends Component {
     }
 
     loadData = () => {
-        luongApi.getListItem()
-        .then(list => {
-            this.setState({
-                wages: list
+        chucvuApi.getListItem()
+            .then(list => {
+                this.setState({
+                    chucvu: list
+                })
             })
-        })
-        .catch(error => {
-            console.log(error)
-        })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     renderItem = ({ item, index }) => {
         if (index === 0)
             return (
                 <View style={[styles.AddingCard]}>
-                    <TouchableOpacity style={[styles.displayInlineBlock, styles.add, ]}
-                        onPress={()=>{
+                    <TouchableOpacity style={[styles.displayInlineBlock, styles.add,]}
+                        onPress={() => {
                             NavigationService.navigate('CreateWage')
                         }}>
-                        <Text style={{ color: BLUE_COLOR, fontSize: 16, fontWeight: 'bold'}}>Thêm bậc lương</Text>
+                        <Text style={{ color: BLUE_COLOR, fontSize: 16, fontWeight: 'bold' }}>Thêm chức vụ</Text>
                     </TouchableOpacity>
                 </View>
             )
@@ -68,7 +68,7 @@ export default class WageListScreen extends Component {
                     /> */}
                     <View style={{ flex: 1, height: '100%', justifyContent: 'space-between' }}>
                         <View />
-                        <Text>{item.BacLuong}</Text>
+                        <Text>{item.TenCV}</Text>
                         <View />
                     </View>
                 </View>
@@ -77,11 +77,11 @@ export default class WageListScreen extends Component {
     }
 
     render() {
-        const { wages } = this.state
+        const { chucvu } = this.state
         return (
             <SafeAreaView style={styles.container}>
                 <FlatList
-                    data={[{ none: 0 }, ...wages]}
+                    data={[{ none: 0 }, ...chucvu]}
                     keyExtractor={(item, index) => `${index}`}
                     renderItem={this.renderItem}
                 />

@@ -41,7 +41,7 @@ class DetailEmployeeScreen extends React.Component {
     }
 
     loadData() {
-        nhanvienApi.detailNhanvien()
+        nhanvienApi.detailItem()
             .then(nv => {
                 this.setState({
                     ...this.state,

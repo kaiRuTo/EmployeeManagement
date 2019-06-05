@@ -1,22 +1,22 @@
 import callApi from './helperApi'
 
-export const getListNhanvien = () =>{
-    return callApi('./list/_nhanvien')
+export const getListItem = () =>{
+    return callApi('/list/nhanvien')
 }
 
-export const createNhanvien = () =>{
-    return callApi('./create/_nhanvien')
+export const createItem = data =>{
+    return callApi('/create/nhanvien', 'POST', JSON.stringify(data))
 }
 
-export const updateNhanvien = () =>{
-    return callApi('./update/_nhanvien')
+export const updateItem = data =>{
+    return callApi('/update/nhanvien', 'POST', JSON.stringify(data))
 }
 
-export const deleteNhanvien = () =>{
-    return callApi('./delete/_nhanvien')
+export const deleteItem = () =>{
+    return callApi('/delete/nhanvien')
 }
 
-export const detailNhanvien = () =>{
-    return callApi('./detail/_nhanvien')
+export const detailItem = () =>{
+    return callApi('/detail/nhanvien')
 }
 
