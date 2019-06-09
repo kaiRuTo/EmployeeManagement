@@ -13,7 +13,7 @@ export const updateItem = data => {
 }
 
 export const deleteItem = data => {
-    return callApi(`/delete/nhanvien${data}`, 'DELETE')
+    return callApi(`/delete/nhanvien/${data}`, 'DELETE')
 }
 
 export const detailItem = data => {

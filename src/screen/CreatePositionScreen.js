@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
+    Text,
     TextInput,
     Dimensions
 } from 'react-native';
@@ -30,6 +31,11 @@ class CreatePositionScreen extends Component {
         header: null
     };
 
+    componentDidMount = () => {
+        if (this.props.navigation.getParam('isEdit', false))
+            this.loadPosition()
+    }
+
     createPosition() {
         phongbanApi.createItem({
             TenPB: this.state.TenPB,
@@ -38,6 +44,34 @@ class CreatePositionScreen extends Component {
         })
             .then(nv => {
                 this.props.navigation.goBack()
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    updatePosition() {
+        phongbanApi.updateItem({
+            _id: this.props.navigation.getParam('id'),
+            TenPB: this.state.TenPB,
+            DiaChi: this.state.DiaChi,
+            SDTPB: this.state.SDTPB
+        })
+            .then(nv => {
+                this.props.navigation.navigate('PostionList')
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    loadPosition = () => {
+        phongbanApi.detailItem(this.props.navigation.getParam('id'))
+            .then(position => {
+                this.setState({
+                    ...this.state,
+                    ...position[0]
+                })
             })
             .catch(error => {
                 console.log(error)
@@ -86,7 +120,16 @@ class CreatePositionScreen extends Component {
                         //errorMessage={!phone || phone == '' ? null : (validatephoneNumber(phone) ? null : 'Số điện thoại không hợp lệ')}
                         />
                         <View style={[styles.form, styles.formSubmit]}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (this.props.navigation.getParam('isEdit', false))
+                                        this.updatePosition()
+                                    else this.createPosition()
 
+                                }}
+                            >
+                                <Text>Thêm</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </ScrollView>

@@ -1,5 +1,5 @@
 import React from 'react'
-import {Text} from 'react-native'
+import { Text } from 'react-native'
 import {
     createStackNavigator,
     createBottomTabNavigator
@@ -9,6 +9,7 @@ import EmployeeTab from './EmployeeTab'
 
 import { CreateEmployeeScreen } from '../screen'
 import { DetailEmloyeeScreen } from '../screen'
+import {CreateLaborContract} from '../screen'
 
 import { WageListScreen } from '../screen'
 import { CreateWageScreen } from '../screen'
@@ -26,6 +27,8 @@ import { DetailLevelScreen } from '../screen'
 import { AccountScreen } from '../screen'
 import { AccountDetailScreen } from '../screen'
 
+import { StatiticScreen } from '../screen'
+
 const EmployeeStack = createStackNavigator({
     Employee: {
         screen: EmployeeTab,
@@ -35,6 +38,9 @@ const EmployeeStack = createStackNavigator({
     },
     DetailEmployee: {
         screen: DetailEmloyeeScreen
+    },
+    CreateLaborContract: {
+        screen: CreateLaborContract
     }
 })
 
@@ -96,10 +102,11 @@ const AccountStack = createStackNavigator({
 
 export default createBottomTabNavigator({
     Employee: EmployeeStack,
-    Wage:  WageStack,
+    Wage: WageStack,
     Position: {
         screen: PositionStack
     },
     //LevelStack: LevelStack,
+    Statitic: StatiticScreen,
     Account: AccountStack,
 })

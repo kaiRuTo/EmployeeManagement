@@ -2,11 +2,12 @@ import React, { Component } from 'react'
 import {
     SafeAreaView,
     View,
-    Text
+    Text,
+    StyleSheet
 } from 'react-native'
 
 
-export default class AccountDetailScreen extends Component {
+class AccountDetailScreen extends Component {
     render() {
         return (
             <SafeAreaView>
@@ -16,3 +17,8 @@ export default class AccountDetailScreen extends Component {
     }
 }
 
+const styles = StyleSheet.create({
+    
+})
+
+export default AccountDetailScreen

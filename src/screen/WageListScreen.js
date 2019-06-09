@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 
 import NavigationService from '../route/NavigationService'
-import {luongApi} from '../api'
+import { luongApi } from '../api'
 const { width, height } = Dimensions.get('window')
 
 const BLUE_COLOR = '#007894'
@@ -33,34 +33,34 @@ export default class WageListScreen extends Component {
 
     loadData = () => {
         luongApi.getListItem()
-        .then(list => {
-            this.setState({
-                wages: list
+            .then(list => {
+                this.setState({
+                    wages: list
+                })
             })
-        })
-        .catch(error => {
-            console.log(error)
-        })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     renderItem = ({ item, index }) => {
         if (index === 0)
             return (
                 <View style={[styles.AddingCard]}>
-                    <TouchableOpacity style={[styles.displayInlineBlock, styles.add, ]}
-                        onPress={()=>{
-                            NavigationService.navigate('CreateWage', {
-                                id: item._id
-                            })
+                    <TouchableOpacity style={[styles.displayInlineBlock, styles.add,]}
+                        onPress={() => {
+                            NavigationService.navigate('CreateWage')
                         }}>
-                        <Text style={{ color: BLUE_COLOR, fontSize: 16, fontWeight: 'bold'}}>Thêm bậc lương</Text>
+                        <Text style={{ color: BLUE_COLOR, fontSize: 16, fontWeight: 'bold' }}>Thêm bậc lương</Text>
                     </TouchableOpacity>
                 </View>
             )
         return (
             <TouchableOpacity
                 onPress={() => {
-                    NavigationService.navigate('DetailWage')
+                    NavigationService.navigate('DetailWage', {
+                        id: item._id
+                    })
                 }}
                 style={{ alignSelf: 'center' }}
             >

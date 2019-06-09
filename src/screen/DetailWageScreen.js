@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, StyleSheet, View, Platform, Image, Text, SafeAreaView, StatusBar, Dimensions } from 'react-native';
+import { ScrollView, StyleSheet, View, Platform, Image, Text, SafeAreaView, StatusBar, Dimensions, TouchableOpacity } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
 import NavigationService from '../route/NavigationService'
@@ -11,7 +11,7 @@ class EmployeeDetailScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            displayName: 'Name',
+            BacLuong: 'Name',
             image: 'https://firebasestorage.googleapis.com/v0/b/HairSalon-beauty-app.appspot.com/o/Images%2Favocado-face-mask.jpg?alt=media&token=5bb4d5a4-924e-420f-a044-f7dd3a998622',
             position: 'position',
         };
@@ -55,12 +55,11 @@ class EmployeeDetailScreen extends React.Component {
 
     render() {
         const {
-            id = '',
-            displayName = '',
-            coefficientSalary = '',
-            basicSalary = '',
-            levelSalary = '',
-        } = this.props
+            BacLuong = '',
+            HSLuong = '',
+            LuongCB = '',
+            HSPhuCap = '',
+        } = this.state
         const { image } = this.state
         return (
             <SafeAreaView style={{ flex: 1 }}>
@@ -70,7 +69,7 @@ class EmployeeDetailScreen extends React.Component {
                             <View style={{ flex: 1, alignItems: 'center' }}>
                                 {/* <UserAvatar /> */}
                                 <Text style={[styles.text, styles.textBold, { color: 'black' }]}>
-                                    {`${displayName || 'Lương'}`}
+                                    {`${BacLuong || 'Lương'}`}
                                 </Text>
                             </View>
                         </View>
@@ -79,14 +78,27 @@ class EmployeeDetailScreen extends React.Component {
                         </Text>
                         <View style={styles.containerInfo}>
                             <Text style={styles.text}>
-                                Lương cơ bản: {basicSalary || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                                Lương cơ bản: {LuongCB || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
                             </Text>
                             <Text style={styles.text}>
-                                Hệ số lương: {coefficientSalary || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                                Hệ số lương: {HSLuong || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
                             </Text>
                             <Text style={styles.text}>
-                                Bậc lương: {levelSalary || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                                Hệ số phụ cấp: {HSPhuCap || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
                             </Text>
+                        </View>
+                        <View style={[styles.containerBody]}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    NavigationService.navigate('CreateWage', {
+                                        'NameHeader': 'Chỉnh sửa',
+                                        'isEdit': true,
+                                        'id': this.state._id
+                                    })
+                                }}
+                            >
+                                <Text>Thêm</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </ScrollView>

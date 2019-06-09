@@ -77,7 +77,7 @@ export default class ChucVuListScreen extends Component {
     }
 
     render() {
-        const { chucvu } = this.state
+        const { chucvu } = this.setState
         return (
             <SafeAreaView style={styles.container}>
                 <FlatList

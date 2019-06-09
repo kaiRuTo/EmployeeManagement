@@ -8,7 +8,8 @@ import {
     ScrollView,
     SafeAreaView,
     TextInput,
-    Dimensions
+    Dimensions,
+    Text
 } from 'react-native';
 
 import DateTimePicker from 'react-native-modal-datetime-picker'
@@ -16,7 +17,7 @@ import Moment from 'moment'
 import { Dropdown } from 'react-native-material-dropdown'
 
 import { FormInput } from './component'
-import { phongbanApi } from '../api'
+import {  hopdonglaodongApi } from '../api'
 
 const { width, height } = Dimensions.get('window')
 
@@ -28,6 +29,11 @@ class CreateLaborContract extends Component {
             fromDate: '',
             img: '',
             toDate: '',
+            seletedLoaiHopDong: '',
+            loaiHopDong: [
+                { value: 'Ngắn hạn' },
+                { value: 'Dài hạn' }
+            ],
 
             isFromDateDateTimePickerVisible: false,
             isToDateDateTimePickerVisible: false
@@ -38,11 +44,12 @@ class CreateLaborContract extends Component {
         header: null
     };
 
-    createPosition() {
-        phongbanApi.createItem({
-            displayName: this.state.displayName,
-            address: this.state.address,
-            phone: this.state.phone
+    createLaborContract() {
+        hopdonglaodongApi.createItem({
+            'MaNV': this.props.navigation.getParam('id'),
+            'LoaiHD': this.state.seletedLoaiHopDong,
+            'fromDate': this.state.fromDate,
+            'toDate': this.state.toDate
         })
             .then(nv => {
                 this.props.navigation.goBack()
@@ -76,7 +83,7 @@ class CreateLaborContract extends Component {
 
 
     render() {
-        const { displayName,
+        const { seletedLoaiHopDong,
             fromDate,
             toDate
         } = this.state;
@@ -84,27 +91,23 @@ class CreateLaborContract extends Component {
             <SafeAreaView style={styles.container}>
                 <ScrollView showsVerticalScrollIndicator={false} style={[styles.container, { paddingTop: 10 }]}>
                     <View style={styles.containerBody}>
-                        <View style={styles.displayInlineBlock}>
-                            <View style={{ width: '50%' }}>
-                                <FormInput
-                                    line
-                                    label={'Phòng'}
-                                    textBox
-                                    require
-                                    onChangeText={(text) => this.setState({ displayName: text })}
-                                    value={displayName}
-                                    placeholder={'Tên phòng...'}
-                                //errorMessage={!displayName || displayName == '' ? null : (validateName(displayName) ? null : 'Tên không hợp lệ')}
-                                />
-                            </View>
-                        </View>
+                        <Dropdown
+                            label='Loại hợp đồng'
+                            data={this.state.loaiHopDong}
+                            value={seletedLoaiHopDong}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    seletedLoaiHopDong: text,
+                                })
+                            }}
+                        />
                         <FormInput
                             line
                             label={'Từ ngày'}
                             textBox
                             require
                             onFocus={this.showFromDateDateTimePicker}
-                            value={fromDate}
+                            value={Moment(fromDate).format('DD/MM/YYYY')}
                         />
                         <FormInput
                             line
@@ -112,11 +115,17 @@ class CreateLaborContract extends Component {
                             textBox
                             require
                             onFocus={this.showToDateDateTimePicker}
-                            value={toDate}
+                            value={Moment(toDate).format('DD/MM/YYYY')}
                         //errorMessage={!phone || phone == '' ? null : (validatephoneNumber(phone) ? null : 'Số điện thoại không hợp lệ')}
                         />
                         <View style={[styles.form, styles.formSubmit]}>
-
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.createLaborContract()
+                                }}
+                            >
+                                <Text>Thêm</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </ScrollView>

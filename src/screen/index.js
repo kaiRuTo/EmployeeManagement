@@ -12,6 +12,8 @@ import CreateLevelScreen from './CreateLevelScreen'
 import DetailLevelScreen from './DetailLevelScreen'
 import LevelListScreen from './LevelListScreen'
 import TabScreen from './TabScreen'
+import CreateLaborContract from './CreateLaborContract'
+import StatiticScreen from './StatiticScreen'
 
 export {
     AccountDetailScreen,
@@ -27,5 +29,7 @@ export {
     DetailLevelScreen,
     CreateLevelScreen,
     LevelListScreen,
-    TabScreen
+    TabScreen,
+    CreateLaborContract,
+    StatiticScreen
 }

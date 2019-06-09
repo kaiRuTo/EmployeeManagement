@@ -21,13 +21,13 @@ class CreateWageScreen extends Component {
         super(props);
         this.state = {
             lastName: '',
-            displayName: '',
-            basicSalary: '',
+            BacLuong: '',
+            LuongCB: '',
             img: '',
-            levelSalary: '',
+            HSPhuCap: '',
             password: '',
             confirm: '',
-            coefficientSalary: '',
+            HSLuong: '',
             chuyenNganh: '',
             trinhDo: '',
             noiDaoTao: '',
@@ -42,15 +42,30 @@ class CreateWageScreen extends Component {
     componentDidMount = () => {
         this.setState({
             isEdit: this.props.navigation.getParam('isEdit', false)
+        }, () => {
+            if (this.state.isEdit)
+                luongApi.detailItem(this.props.navigation.getParam('id'))
+                    .then(wages => {
+                        this.setState({
+                            ...this.state,
+                            BacLuong: wages[0].BacLuong.toString(),
+                            LuongCB: wages[0].LuongCB.toString(),
+                            HSLuong: wages[0].HSLuong.toString(),
+                            HSPhuCap:wages[0].HSPhuCap.toString(),
+                        })
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
         })
     }
 
     createWage() {
         luongApi.createItem({
-            BacLuong: parseInt(this.state.displayName),
-            LuongCB: parseInt(this.state.basicSalary),
-            HSLuong: parseFloat(this.state.coefficientSalary),
-            HSPhuCap: parseFloat(this.state.levelSalary),
+            BacLuong: parseInt(this.state.BacLuong),
+            LuongCB: parseInt(this.state.LuongCB),
+            HSLuong: parseFloat(this.state.HSLuong),
+            HSPhuCap: parseFloat(this.state.HSPhuCap),
         })
             .then(wage => {
                 this.props.navigation.goBack()
@@ -61,9 +76,26 @@ class CreateWageScreen extends Component {
             })
     }
 
+    uploadWage() {
+        luongApi.updateItem({
+            _id: this.props.navigation.getParam('id'),
+            BacLuong: parseInt(this.state.BacLuong),
+            LuongCB: parseInt(this.state.LuongCB),
+            HSLuong: parseFloat(this.state.HSLuong),
+            HSPhuCap: parseFloat(this.state.HSPhuCap),
+        })
+            .then(wage => {
+                this.props.navigation.navigate('WageList')
+
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
 
     render() {
-        const { lastName, displayName, basicSalary, img, levelSalary, coefficientSalary, password, confirm,
+        const { lastName, BacLuong, LuongCB, img, HSPhuCap, HSLuong, password, confirm,
             chuyenNganh,
             trinhDo,
             noiDaoTao,
@@ -79,10 +111,10 @@ class CreateWageScreen extends Component {
                                     label={'Lương'}
                                     textBox
                                     require
-                                    onChangeText={(text) => this.setState({ displayName: text })}
-                                    value={displayName}
+                                    onChangeText={(text) => this.setState({ BacLuong: text })}
+                                    value={BacLuong}
                                     placeholder={'Tên lương...'}
-                                //errorMessage={!displayName || displayName == '' ? null : (validateName(displayName) ? null : 'Tên không hợp lệ')}
+                                //errorMessage={!BacLuong || BacLuong == '' ? null : (validateName(BacLuong) ? null : 'Tên không hợp lệ')}
                                 />
                             </View>
                         </View>
@@ -91,8 +123,8 @@ class CreateWageScreen extends Component {
                             label={'Lương cơ bản'}
                             textBox
                             require
-                            onChangeText={(text) => this.setState({ basicSalary: text })}
-                            value={basicSalary}
+                            onChangeText={(text) => this.setState({ LuongCB: text })}
+                            value={LuongCB}
                             placeholder={'Nhập lương cơ bản...'}
                         />
                         <FormInput
@@ -100,10 +132,10 @@ class CreateWageScreen extends Component {
                             label={'Hệ số lương'}
                             textBox
                             require
-                            onChangeText={(text) => this.setState({ coefficientSalary: text })}
-                            value={coefficientSalary}
+                            onChangeText={(text) => this.setState({ HSLuong: text })}
+                            value={HSLuong}
                             placeholder={'Nhập hệ số lương...'}
-                        //errorMessage={!coefficientSalary || coefficientSalary == '' ? null : (validateSpecialKey(coefficientSalary) ? null : 'Tên tài khoản không chứa ký tự đặc biệt')}
+                        //errorMessage={!HSLuong || HSLuong == '' ? null : (validateSpecialKey(HSLuong) ? null : 'Tên tài khoản không chứa ký tự đặc biệt')}
                         />
                         <FormInput
                             line
@@ -111,15 +143,17 @@ class CreateWageScreen extends Component {
                             textBox
                             require
                             keyboardType={'number-pad'}
-                            onChangeText={(text) => this.setState({ levelSalary: text })}
-                            value={levelSalary}
+                            onChangeText={(text) => this.setState({ HSPhuCap: text })}
+                            value={HSPhuCap}
                             placeholder={'Hệ số phụ cấp...'}
-                        //errorMessage={!levelSalary || levelSalary == '' ? null : (validatelevelSalaryNumber(levelSalary) ? null : 'Số điện thoại không hợp lệ')}
+                        //errorMessage={!HSPhuCap || HSPhuCap == '' ? null : (validateHSPhuCapNumber(HSPhuCap) ? null : 'Số điện thoại không hợp lệ')}
                         />
                         <View style={[styles.form, styles.formSubmit]}>
                             <TouchableOpacity
                                 onPress={() => {
-                                    this.createWage()
+                                    if (this.props.navigation.getParam('isEdit', false))
+                                        this.uploadWage()
+                                    else this.createWage()
                                 }}
                             >
                                 <Text>Thêm</Text>

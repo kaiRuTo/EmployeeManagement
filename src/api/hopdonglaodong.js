@@ -9,11 +9,11 @@ export const createItem = data => {
 }
 
 export const updateItem = (data) => {
-    return callApi(`/update/hopdonglaodong${data._id}`, 'PUT', JSON.stringify(data))
+    return callApi(`/update/hopdonglaodong/${data._id}`, 'PUT', JSON.stringify(data))
 }
 
 export const deleteItem = data => {
-    return callApi(`/delete/hopdonglaodong${data}`, 'DELETE')
+    return callApi(`/delete/hopdonglaodong//${data}`, 'DELETE')
 }
 
 export const detailItem = data => {

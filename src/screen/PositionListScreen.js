@@ -59,7 +59,9 @@ export default class PositionListScreen extends Component {
         return (
             <TouchableOpacity
                 onPress={() => {
-                    NavigationService.navigate('DetailPosition')
+                    NavigationService.navigate('DetailPosition', {
+                        'id': item._id
+                    })
                 }}
                 style={{ alignSelf: 'center' }}
             >
