@@ -13,11 +13,15 @@ import {
 } from 'react-native';
 import DateTimePicker from 'react-native-modal-datetime-picker'
 import Moment from 'moment'
+import { ButtonOutline } from './component'
 import { Dropdown } from 'react-native-material-dropdown'
 import _, { get } from 'lodash'
+import { validate } from '../helper'
 import { FormInput, PopUpInput } from './component'
 import { nhanvienApi, chucvuApi, phongbanApi, trinhdohocvanApi, luongApi } from '../api'
 
+
+const BLUE_COLOR = '#007894'
 
 const { width, height } = Dimensions.get('window')
 
@@ -62,13 +66,13 @@ class CreateEmployeeScreen extends Component {
         if (this.props.navigation.getParam('isEdit', false))
             this.loadNhanView()
         this.setState({
-            "HoTen":"Kid",
-            "NgaySinh":"2019-06-08T23:28:49.356Z",
-            "SoDienThoai":"0943052884",
-            "QueQuan":"Dong Thap",
-            "GioiTinh":"Nam",
-            "DanToc":"Kinh",
-            "Username":"Kid1",
+            "HoTen": "Kid",
+            "NgaySinh": "2019-06-08T23:28:49.356Z",
+            "SoDienThoai": "0943052884",
+            "QueQuan": "Dong Thap",
+            "GioiTinh": "Nam",
+            "DanToc": "Kinh",
+            "Username": "Kid1",
         })
     }
 
@@ -88,17 +92,18 @@ class CreateEmployeeScreen extends Component {
     };
 
     loadNhanView = () => {
+        const { MaCV, MaPB, MaTDHV, BacLuong } = this.state
         nhanvienApi.detailItem(this.props.navigation.getParam('id'))
             .then(list => {
                 this.setState({
                     ...this.state,
-                    ...list[0]
+                    ...list.nv[0]
                 }, () => {
                     this.setState({
-                        MaCV: get(_.filter(this.state.listCV, function (item) { return item._id === this.state.MaCV })[0], 'TenCV'),
-                        MaPB: get(_.filter(this.state.listPB, function (item) { return item._id === this.state.MaPB })[0], 'TenPB'),
-                        MaTDHV: get(_.filter(this.state.listTDHV, function (item) { return item._id === this.state.MaTDHV })[0], 'TenTDHV'),
-                        BacLuong: get(_.filter(this.state.listBacLuong, function (item) { return item._id === this.state.BacLuong })[0], 'LuongCB'),
+                        MaCV: get(_.filter(this.state.listCV, function (item) { return item._id === MaCV })[0], 'TenCV'),
+                        MaPB: get(_.filter(this.state.listPB, function (item) { return item._id === MaPB })[0], 'TenPB'),
+                        MaTDHV: get(_.filter(this.state.listTDHV, function (item) { return item._id === MaTDHV })[0], 'TenTDHV'),
+                        BacLuong: get(_.filter(this.state.listBacLuong, function (item) { return item._id === BacLuong })[0], 'LuongCB'),
                     })
                 })
             })
@@ -226,10 +231,10 @@ class CreateEmployeeScreen extends Component {
             DanToc: this.state.DanToc,
             Password: this.state.Password,
             Username: this.state.Username,
-            MaCV: this.state.MaCV,
-            MaPB: this.state.MaPB,
-            MaTDHV: this.state.MaTDHV,
-            BacLuong: parseInt(this.state.BacLuong)
+            MaCV: this.state.MaCV || '',
+            MaPB: this.state.MaPB || '',
+            MaTDHV: this.state.MaTDHV || '',
+            BacLuong: parseInt(this.state.BacLuong) || ''
         })
             .then(nv => {
                 this.props.navigation.navigate('Employee')
@@ -266,7 +271,7 @@ class CreateEmployeeScreen extends Component {
                                     onChangeText={(text) => this.setState({ HoTen: text })}
                                     value={HoTen}
                                     placeholder={'Tên nhân viên...'}
-                                //errorMessage={!HoTen || HoTen == '' ? null : (validateName(HoTen) ? null : 'Tên không hợp lệ')}
+                                    errorMessage={!HoTen || HoTen == '' ? null : (validate.validateName(HoTen) ? null : 'Tên không hợp lệ')}
                                 />
                             </View>
                         </View>
@@ -305,7 +310,7 @@ class CreateEmployeeScreen extends Component {
                             onChangeText={(text) => this.setState({ Username: text })}
                             value={Username}
                             placeholder={'Nhập tên tài khoản...'}
-                        //errorMessage={!userName || userName == '' ? null : (validateSpecialKey(userName) ? null : 'Tên tài khoản không chứa ký tự đặc biệt')}
+                            errorMessage={!Username || Username == '' ? null : (validate.validateSpecialKey(Username) ? null : 'Tên tài khoản không chứa ký tự đặc biệt')}
                         />
                         <View style={styles.displayInlineBlock}>
                             <View style={{ width: '50%' }}>
@@ -329,7 +334,7 @@ class CreateEmployeeScreen extends Component {
                                     onChangeText={(text) => this.setState({ confirm: text })}
                                     value={confirm}
                                     placeholder={'Xác nhận mật khẩu...'}
-                                //errorMessage={!confirm || confirm == '' ? null : (confirmPassword(password, confirm) ? null : 'Mật khẩu xác nhận chưa trùng khớp')}
+                                    errorMessage={!confirm || confirm == '' ? null : (validate.confirmPassword(Password, confirm) ? null : 'Mật khẩu xác nhận chưa trùng khớp')}
                                 />
                             </View>
                         </View>
@@ -342,7 +347,7 @@ class CreateEmployeeScreen extends Component {
                             onChangeText={(text) => this.setState({ SoDienThoai: text })}
                             value={SoDienThoai}
                             placeholder={'Nhập số điện thoại...'}
-                        //errorMessage={!phone || phone == '' ? null : (validatePhoneNumber(phone) ? null : 'Số điện thoại không hợp lệ')}
+                            errorMessage={!SoDienThoai || SoDienThoai == '' ? null : (validate.validatePhoneNumber(SoDienThoai) ? null : 'Số điện thoại không hợp lệ')}
                         />
                         <View style={[styles.displayInlineBlock, { height: 40, alignItems: 'center', width: '100%' }]}>
                             <Dropdown
@@ -364,7 +369,7 @@ class CreateEmployeeScreen extends Component {
                                     this._toggleChucVuPopupInput()
                                 }}
                             >
-                                <Text>Thêm</Text>
+                                <Text style={{ color: BLUE_COLOR }}>Thêm</Text>
                             </TouchableOpacity>
                         </View>
                         <Dropdown
@@ -399,7 +404,7 @@ class CreateEmployeeScreen extends Component {
                                     this._toggleTrinhDoPopupInput()
                                 }}
                             >
-                                <Text>Thêm</Text>
+                                <Text style={{ color: BLUE_COLOR }}>Thêm</Text>
                             </TouchableOpacity>
                         </View>
                         <Dropdown
@@ -415,15 +420,29 @@ class CreateEmployeeScreen extends Component {
                             }}
                         />
                         <View style={[styles.form, styles.formSubmit]}>
-                            <TouchableOpacity
+                            <ButtonOutline
+                                width='50%'
+                                disable={
+                                    !validate.validateName(HoTen) ||
+                                    NgaySinh == '' ||
+                                    QueQuan == '' ||
+                                    DanToc == '' ||
+                                    Username == '' ||
+                                    Password == '' ||
+                                    !validate.confirmPassword(Password, confirm) ||
+                                    !validate.validatePhoneNumber(SoDienThoai) ||
+                                    MaCV == '' ||
+                                    MaPB == '' ||
+                                    MaTDHV == '' ||
+                                    BacLuong == ''
+                                }
+                                label={this.props.navigation.getParam('isEdit', false) ? 'CHỈNH SỬA' : 'THÊM'}
                                 onPress={() => {
                                     if (this.props.navigation.getParam('isEdit', false))
                                         this.updateEmployee()
                                     else this.createEmployee()
                                 }}
-                            >
-                                <Text>Thêm</Text>
-                            </TouchableOpacity>
+                            />
                         </View>
                     </View>
                 </ScrollView>

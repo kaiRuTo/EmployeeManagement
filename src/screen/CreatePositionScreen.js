@@ -12,8 +12,10 @@ import {
     Dimensions
 } from 'react-native';
 
+import { ButtonOutline } from './component'
 import { FormInput } from './component'
 import { phongbanApi } from '../api'
+import { validate } from '../helper'
 
 const { width, height } = Dimensions.get('window')
 
@@ -70,14 +72,13 @@ class CreatePositionScreen extends Component {
             .then(position => {
                 this.setState({
                     ...this.state,
-                    ...position[0]
+                    ...position.pb[0]
                 })
             })
             .catch(error => {
                 console.log(error)
             })
     }
-
 
     render() {
         const { TenPB, DiaChi, SDTPB } = this.state;
@@ -95,7 +96,7 @@ class CreatePositionScreen extends Component {
                                     onChangeText={(text) => this.setState({ TenPB: text })}
                                     value={TenPB}
                                     placeholder={'Tên phòng...'}
-                                //errorMessage={!TenPB || TenPB == '' ? null : (validateName(TenPB) ? null : 'Tên không hợp lệ')}
+                                    errorMessage={!TenPB || TenPB == '' ? null : (validate.validateName(TenPB) ? null : 'Tên không hợp lệ')}
                                 />
                             </View>
                         </View>
@@ -117,19 +118,23 @@ class CreatePositionScreen extends Component {
                             onChangeText={(text) => this.setState({ SDTPB: text })}
                             value={SDTPB}
                             placeholder={'Nhập điện thoại...'}
-                        //errorMessage={!phone || phone == '' ? null : (validatephoneNumber(phone) ? null : 'Số điện thoại không hợp lệ')}
+                            errorMessage={!SDTPB || SDTPB == '' ? null : (validate.validatePhoneNumber(SDTPB) ? null : 'Số điện thoại không hợp lệ')}
                         />
                         <View style={[styles.form, styles.formSubmit]}>
-                            <TouchableOpacity
+                            <ButtonOutline
+                                width='50%'
+                                disable={
+                                    !validate.validatePhoneNumber(SDTPB) ||
+                                    !validate.validateName(TenPB) ||
+                                    DiaChi == ''
+                                }
+                                label={this.props.navigation.getParam('isEdit', false) ? 'CHỈNH SỬA' : 'THÊM'}
                                 onPress={() => {
                                     if (this.props.navigation.getParam('isEdit', false))
                                         this.updatePosition()
                                     else this.createPosition()
-
                                 }}
-                            >
-                                <Text>Thêm</Text>
-                            </TouchableOpacity>
+                            />
                         </View>
                     </View>
                 </ScrollView>

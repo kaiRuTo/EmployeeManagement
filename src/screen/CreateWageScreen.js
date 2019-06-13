@@ -11,9 +11,12 @@ import {
     TextInput,
     Dimensions
 } from 'react-native';
+import numeral from 'numeral'
 
+import { ButtonOutline } from './component'
 import { FormInput } from './component'
 import { luongApi } from '../api'
+import { validate } from '../helper'
 const { width, height } = Dimensions.get('window')
 
 class CreateWageScreen extends Component {
@@ -51,7 +54,7 @@ class CreateWageScreen extends Component {
                             BacLuong: wages[0].BacLuong.toString(),
                             LuongCB: wages[0].LuongCB.toString(),
                             HSLuong: wages[0].HSLuong.toString(),
-                            HSPhuCap:wages[0].HSPhuCap.toString(),
+                            HSPhuCap: wages[0].HSPhuCap.toString(),
                         })
                     })
                     .catch(error => {
@@ -114,7 +117,6 @@ class CreateWageScreen extends Component {
                                     onChangeText={(text) => this.setState({ BacLuong: text })}
                                     value={BacLuong}
                                     placeholder={'Tên lương...'}
-                                //errorMessage={!BacLuong || BacLuong == '' ? null : (validateName(BacLuong) ? null : 'Tên không hợp lệ')}
                                 />
                             </View>
                         </View>
@@ -123,19 +125,22 @@ class CreateWageScreen extends Component {
                             label={'Lương cơ bản'}
                             textBox
                             require
+                            keyboardType = {'number-pad'}
                             onChangeText={(text) => this.setState({ LuongCB: text })}
-                            value={LuongCB}
+                            value={numeral(LuongCB).format('0,0')}
                             placeholder={'Nhập lương cơ bản...'}
+                            errorMessage={!LuongCB || LuongCB == '' ? null : (validate.validateNumber(LuongCB) ? null : 'Tên tài khoản không chứa ký tự đặc biệt')}
                         />
                         <FormInput
                             line
                             label={'Hệ số lương'}
                             textBox
                             require
+                            keyboardType = {'number-pad'}
                             onChangeText={(text) => this.setState({ HSLuong: text })}
                             value={HSLuong}
                             placeholder={'Nhập hệ số lương...'}
-                        //errorMessage={!HSLuong || HSLuong == '' ? null : (validateSpecialKey(HSLuong) ? null : 'Tên tài khoản không chứa ký tự đặc biệt')}
+                            errorMessage={!HSLuong || HSLuong == '' ? null : (validate.validateNumber(HSLuong) ? null : 'Tên tài khoản không chứa ký tự đặc biệt')}
                         />
                         <FormInput
                             line
@@ -146,18 +151,24 @@ class CreateWageScreen extends Component {
                             onChangeText={(text) => this.setState({ HSPhuCap: text })}
                             value={HSPhuCap}
                             placeholder={'Hệ số phụ cấp...'}
-                        //errorMessage={!HSPhuCap || HSPhuCap == '' ? null : (validateHSPhuCapNumber(HSPhuCap) ? null : 'Số điện thoại không hợp lệ')}
+                            errorMessage={!HSPhuCap || HSPhuCap == '' ? null : (validate.validateNumber(HSPhuCap) ? null : 'Số điện thoại không hợp lệ')}
                         />
                         <View style={[styles.form, styles.formSubmit]}>
-                            <TouchableOpacity
+                            <ButtonOutline
+                                width='50%'
+                                disable={
+                                    !validate.validateNumber(BacLuong) ||
+                                    !validate.validateNumber(LuongCB) ||
+                                    !validate.validateNumber(HSLuong) ||
+                                    !validate.validateNumber(HSPhuCap)
+                                }
+                                label={this.props.navigation.getParam('isEdit', false) ? 'CHỈNH SỬA' : 'THÊM'}
                                 onPress={() => {
                                     if (this.props.navigation.getParam('isEdit', false))
                                         this.uploadWage()
                                     else this.createWage()
                                 }}
-                            >
-                                <Text>Thêm</Text>
-                            </TouchableOpacity>
+                            />
                         </View>
                     </View>
                 </ScrollView>

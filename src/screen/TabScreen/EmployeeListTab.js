@@ -6,24 +6,35 @@ import {
     StyleSheet,
     FlatList,
     TouchableOpacity,
-    Dimensions
+    Dimensions,
+    RefreshControl
 } from 'react-native'
 
+import { SearchBar } from '../component'
 import NavigationService from '../../route/NavigationService'
-import {nhanvienApi} from '../../api'
+import { nhanvienApi } from '../../api'
 const { width, height } = Dimensions.get('window')
+
+import { nameOfNhanVienReducers } from '../../reducers'
+import { nhanVienActions } from '../../actions'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
 
 const BLUE_COLOR = '#007894'
 
-export default class EmployeeListTab extends Component {
+class EmployeeListTab extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
             employees: [
-                { 'name': 'Nguyễn Văn A', 'position': 'Designer' },
-                { 'name': 'Nguyễn Văn B', 'position': 'Dev' }
-            ]
+                { 'HoTen': 'Nguyễn Quốc An', 'position': '16520012' },
+                { 'HoTen': 'Nguyễn Khánh Duy', 'position': '16520295' },
+                { 'HoTen': 'Lưu Hoàng Hiệp', 'position': '16520379' }
+            ],
+            searchText: '',
+            searchFilter: [],
+            isLoading: false,
         }
     }
 
@@ -32,26 +43,33 @@ export default class EmployeeListTab extends Component {
     }
 
     loadData = () => {
-        nhanvienApi.getListItem()
-        .then(list => {
-            this.setState({
-                employees: list
-            })
+        this.setState({ isLoading: true }, () => {
+            nhanvienApi.getListItem()
+                .then(list => {
+                    this.setState({
+                        employees: list.nv,
+                        isLoading: false
+                    })
+                })
+                .catch(error => {
+                    this.setState({
+                        isLoading: false
+                    })
+                    console.log(error)
+                })
         })
-        .catch(error => {
-            console.log(error)
-        })
+
     }
 
     renderItem = ({ item, index }) => {
         if (index === 0)
             return (
                 <View style={[styles.AddingCard]}>
-                    <TouchableOpacity style={[styles.displayInlineBlock, styles.add, ]}
-                        onPress={()=>{
+                    <TouchableOpacity style={[styles.displayInlineBlock, styles.add,]}
+                        onPress={() => {
                             NavigationService.navigate('CreateEmployee')
                         }}>
-                        <Text style={{ color: BLUE_COLOR, fontSize: 16, fontWeight: 'bold'}}>Thêm nhân viên</Text>
+                        <Text style={{ color: BLUE_COLOR, fontSize: 16, fontWeight: 'bold' }}>Thêm nhân viên</Text>
                     </TouchableOpacity>
                 </View>
             )
@@ -70,8 +88,8 @@ export default class EmployeeListTab extends Component {
                     /> */}
                     <View style={{ flex: 1, height: '100%', justifyContent: 'space-between' }}>
                         <View />
-                        <Text>{item.HoTen}</Text>
-                        <Text>{item.MaPB}</Text>
+                        <Text style ={{color: 'black'}}>{item.HoTen}</Text>
+                        <Text style ={{color: '#A4A4A4'}}>{item.MaPB}</Text>
                         <View />
                     </View>
                 </View>
@@ -79,12 +97,39 @@ export default class EmployeeListTab extends Component {
         )
     }
 
+    searchFilterFunction = text => {
+        const newData = this.state.employees.filter(item => {
+            const itemData = `${item.HoTen.toUpperCase()}`;
+            const textData = text.toUpperCase();
+
+            return itemData.indexOf(textData) > -1;
+        });
+        console.log(newData)
+        this.setState({ searchFilter: newData });
+    };
+
     render() {
-        const { employees } = this.state
+        const { searchText, employees, searchFilter } = this.state
+        console.log(this.state)
         return (
             <SafeAreaView style={styles.container}>
+                <SearchBar
+                    inputStyle={{ backgroundColor: '#FAFAFA' }}
+                    onChangeText={(text) => {
+                        this.searchFilterFunction(text)
+                        this.setState({ searchText: text })
+                    }}
+                    value={this.state.searchText}
+                    onClear={() => this.setState({ searchText: '' })}
+                />
                 <FlatList
-                    data={[{ none: 0 }, ...employees]}
+                    refreshControl={
+                        <RefreshControl
+                            onRefresh={this.loadData}
+                            refreshing={this.state.isLoading}
+                        />
+                    }
+                    data={(searchText != '') ? [{ none: 0 }, ...searchFilter] : [{ none: 0 }, ...employees]}
                     keyExtractor={(item, index) => `${index}`}
                     renderItem={this.renderItem}
                 />
@@ -137,3 +182,17 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
 })
+
+const mapStateToProps = (state, ownProps) => {
+    return {
+        ...state[nameOfNhanVienReducers]
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        actions: bindActionCreators(nhanVienActions, dispatch)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EmployeeListTab)

@@ -6,6 +6,7 @@ import NavigationService from '../route/NavigationService'
 
 import Moment from 'moment'
 const { width, height } = Dimensions.get('window')
+import { ButtonOutline } from './component'
 import { nhanvienApi } from '../api'
 
 class DetailEmployeeScreen extends React.Component {
@@ -15,6 +16,7 @@ class DetailEmployeeScreen extends React.Component {
             displayName: 'Name',
             image: 'https://firebasestorage.googleapis.com/v0/b/HairSalon-beauty-app.appspot.com/o/Images%2Favocado-face-mask.jpg?alt=media&token=5bb4d5a4-924e-420f-a044-f7dd3a998622',
             MaCV: 'MaCV',
+            hopDong: {}
         };
     }
 
@@ -41,14 +43,28 @@ class DetailEmployeeScreen extends React.Component {
         this.loadData()
     }
 
+    delete = () => {
+        nhanvienApi.deleteItem(this.props.navigation.getParam('id'))
+            .then(res => {
+                NavigationService.goBack()
+            })
+            .catch(error => {
+                NavigationService.goBack()
+            })
+    }
+
     loadData() {
         nhanvienApi.detailItem(this.props.navigation.getParam('id'))
-            .then(nv => {
+            .then(res => {
+                console.log(res)
                 this.setState({
                     ...this.state,
-                    ...nv[0]
+                    ...res.nv[0],
+                    hopDong: {
+                        ...res.hd[0]
+                    }
                 }, () => {
-                    console.log(nv, this.state)
+                    console.log(this.state)
                 })
             })
             .catch(error => {
@@ -68,8 +84,14 @@ class DetailEmployeeScreen extends React.Component {
             QueQuan = '',
             SoDienThoai = '',
             email = '',
-            MaPB = ''
+            MaPB = '',
+            MaTDHV = '',
+            BacLuong = ''
         } = this.state
+        const {
+            LoaiHD,
+            TuNgay,
+            DenNgay } = this.state.hopDong
         const { image } = this.state
         return (
             <SafeAreaView style={{ flex: 1 }}>
@@ -111,9 +133,41 @@ class DetailEmployeeScreen extends React.Component {
                             <Text style={styles.text}>
                                 Phòng: {MaPB || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
                             </Text>
+                            <Text style={styles.text}>
+                                Bậc lương: {BacLuong || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                            </Text>
+                            <Text style={styles.text}>
+                                Trình độ học vấn: {MaTDHV || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                            </Text>
                         </View>
-                        <View style={[styles.containerBody]}>
-                            <TouchableOpacity
+                        <Text style={[styles.text, styles.textBold, { alignSelf: 'center', marginTop: 0, marginBottom: 0 }]}>
+                            Thông tin hợp đồng
+                        </Text>
+                        <View style={styles.containerInfo}>
+                            <Text style={styles.text}>
+                                Loại hợp đồng: {LoaiHD || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                            </Text>
+                            <Text style={styles.text}>
+                                Từ ngày: {Moment(TuNgay).format('DD/MM/YYYY') || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                            </Text>
+                            <Text style={styles.text}>
+                                Đến ngày: {Moment(DenNgay).format('DD/MM/YYYY') || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                            </Text>
+                        </View>
+                        <View style={[styles.containerBody, styles.displayInlineBlock, { justifyContent: 'space-around' }]}>
+                            <ButtonOutline
+                                width='40%'
+                                backgroundColor={'red'}
+                                label={'XOÁ'}
+                                disable={false}
+                                style={{ borderWidth: 0 }}
+                                onPress={() => {
+                                    this.delete()
+                                }}
+                            />
+                            <ButtonOutline
+                                width='40%'
+                                label={'CHỈNH SỬA'}
                                 onPress={() => {
                                     NavigationService.navigate('CreateEmployee', {
                                         'NameHeader': 'Chỉnh sửa',
@@ -121,9 +175,7 @@ class DetailEmployeeScreen extends React.Component {
                                         'id': this.state._id
                                     })
                                 }}
-                            >
-                                <Text>Thêm</Text>
-                            </TouchableOpacity>
+                            />
                         </View>
                     </View>
                 </ScrollView>
@@ -153,6 +205,11 @@ const styles = StyleSheet.create({
         width: width * 0.95,
         alignItems: 'center',
     },
+    displayInlineBlock: {
+        flexWrap: 'wrap',
+        alignItems: 'flex-start',
+        flexDirection: 'row',
+    },
     containerInfoAvatar: {
         width: width * 0.9,
         marginVertical: width * 0.05,
@@ -172,7 +229,6 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     containerInfo: {
-        flexWrap: 'wrap',
         backgroundColor: 'black',
         width: width * 0.9,
         marginVertical: width * 0.05,

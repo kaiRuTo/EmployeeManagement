@@ -4,6 +4,8 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
 import NavigationService from '../route/NavigationService'
 
+import { ButtonOutline } from './component'
+import numeral from 'numeral'
 const { width, height } = Dimensions.get('window')
 import { luongApi } from '../api'
 
@@ -69,7 +71,7 @@ class EmployeeDetailScreen extends React.Component {
                             <View style={{ flex: 1, alignItems: 'center' }}>
                                 {/* <UserAvatar /> */}
                                 <Text style={[styles.text, styles.textBold, { color: 'black' }]}>
-                                    {`${BacLuong || 'Lương'}`}
+                                    Bậc lương {`${BacLuong || 'Lương'}`}
                                 </Text>
                             </View>
                         </View>
@@ -78,7 +80,7 @@ class EmployeeDetailScreen extends React.Component {
                         </Text>
                         <View style={styles.containerInfo}>
                             <Text style={styles.text}>
-                                Lương cơ bản: {LuongCB || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
+                                Lương cơ bản: {numeral(LuongCB).format('0,0') || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
                             </Text>
                             <Text style={styles.text}>
                                 Hệ số lương: {HSLuong || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
@@ -87,8 +89,10 @@ class EmployeeDetailScreen extends React.Component {
                                 Hệ số phụ cấp: {HSPhuCap || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
                             </Text>
                         </View>
-                        <View style={[styles.containerBody]}>
-                            <TouchableOpacity
+                        <View style={[styles.containerBody, styles.displayInlineBlock, { justifyContent: 'space-around' }]}>
+                            <ButtonOutline
+                                width='40%'
+                                label={'CHỈNH SỬA'}
                                 onPress={() => {
                                     NavigationService.navigate('CreateWage', {
                                         'NameHeader': 'Chỉnh sửa',
@@ -96,9 +100,7 @@ class EmployeeDetailScreen extends React.Component {
                                         'id': this.state._id
                                     })
                                 }}
-                            >
-                                <Text>Thêm</Text>
-                            </TouchableOpacity>
+                            />
                         </View>
                     </View>
                 </ScrollView>
@@ -127,6 +129,11 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: width * 0.95,
         alignItems: 'center',
+    },
+    displayInlineBlock: {
+        flexWrap: 'wrap',
+        alignItems: 'flex-start',
+        flexDirection: 'row',
     },
     containerInfoAvatar: {
         width: width * 0.9,

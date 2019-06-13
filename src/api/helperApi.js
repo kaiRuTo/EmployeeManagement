@@ -1,5 +1,5 @@
 
-const constants = 'http://192.168.4.125:3001'
+const constants = 'http://172.30.29.206:3001'
 
 export default function callApi(endpoint, method = 'GET', body, header = {
     //Accept: 'application/json',

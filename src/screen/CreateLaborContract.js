@@ -15,9 +15,8 @@ import {
 import DateTimePicker from 'react-native-modal-datetime-picker'
 import Moment from 'moment'
 import { Dropdown } from 'react-native-material-dropdown'
-
-import { FormInput } from './component'
-import {  hopdonglaodongApi } from '../api'
+import { FormInput, ButtonOutline } from './component'
+import { hopdonglaodongApi } from '../api'
 
 const { width, height } = Dimensions.get('window')
 
@@ -53,6 +52,7 @@ class CreateLaborContract extends Component {
         })
             .then(nv => {
                 this.props.navigation.goBack()
+                this.props.navigation.navigation('Employee')
             })
             .catch(error => {
                 console.log(error)
@@ -75,6 +75,8 @@ class CreateLaborContract extends Component {
     };
 
     handleToDateDatePicked = date => {
+        if (date < this.state.fromDate) 
+            return 
         this.setState({
             toDate: date
         });
@@ -119,13 +121,18 @@ class CreateLaborContract extends Component {
                         //errorMessage={!phone || phone == '' ? null : (validatephoneNumber(phone) ? null : 'Số điện thoại không hợp lệ')}
                         />
                         <View style={[styles.form, styles.formSubmit]}>
-                            <TouchableOpacity
+                            <ButtonOutline
+                                width='50%'
+                                disable={
+                                    seletedLoaiHopDong == '' ||
+                                    fromDate == '' ||
+                                    toDate == ''
+                                }
+                                label={'THÊM'}
                                 onPress={() => {
                                     this.createLaborContract()
                                 }}
-                            >
-                                <Text>Thêm</Text>
-                            </TouchableOpacity>
+                            />
                         </View>
                     </View>
                 </ScrollView>

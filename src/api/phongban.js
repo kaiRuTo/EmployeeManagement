@@ -17,5 +17,5 @@ export const deleteItem = data => {
 }
 
 export const detailItem = data => {
-    return callApi(`/find/phongban/${data}`)
+    return callApi(`/thongke/phongban/${data}`)
 }

@@ -1,15 +1,19 @@
 import React from 'react'
-import { Text } from 'react-native'
+import { Text, StyleSheet } from 'react-native'
 import {
     createStackNavigator,
     createBottomTabNavigator
 } from 'react-navigation'
 
+const BLUE_COLOR = '#007894'
+
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import Foundation from 'react-native-vector-icons/Foundation'
 import EmployeeTab from './EmployeeTab'
 
-import { CreateEmployeeScreen } from '../screen'
+import { CreateEmployeeScreen, TabScreen } from '../screen'
 import { DetailEmloyeeScreen } from '../screen'
-import {CreateLaborContract} from '../screen'
+import { CreateLaborContract } from '../screen'
 
 import { WageListScreen } from '../screen'
 import { CreateWageScreen } from '../screen'
@@ -31,7 +35,7 @@ import { StatiticScreen } from '../screen'
 
 const EmployeeStack = createStackNavigator({
     Employee: {
-        screen: EmployeeTab,
+        screen: TabScreen.EmployeeListTab,
     },
     CreateEmployee: {
         screen: CreateEmployeeScreen
@@ -43,6 +47,40 @@ const EmployeeStack = createStackNavigator({
         screen: CreateLaborContract
     }
 })
+
+EmployeeStack.navigationOptions = ({ navigation }) => {
+
+    let tabBarVisible = true;
+    if (navigation.state.index > 0) {
+        tabBarVisible = false;
+    }
+    return ({
+        labeled: true,
+        tabBarLabel: ({ focused }) => focused ? <Text style={styles.text}>Nhân viên</Text> : null,
+        tabBarIcon: ({ focused }) => (
+            <FontAwesome
+                name='users'
+                size={16}
+                color={focused ? BLUE_COLOR : '#D4D4D4'}
+                focused={focused}
+            />
+        ),
+        tabBarVisible,
+        tabBarOptions: {
+            showLabel: true,
+            upperCaseLabel: true,
+            inactiveTintColor: '#A4A4A4',
+            activeTintColor: '#007894',
+            inactiveBackgroundColor: 'white',
+            activeBackgroundColor: 'white',
+            style: {
+                paddingVertical: 0,
+                borderTopWidth: 1,
+                borderTopColor: 'rgba(242,242,242,.5)',
+            }
+        },
+    })
+};
 
 // EmployeeStack.navigationOptions = ({ navigation }) => {
 //     let tabBarVisible = true;
@@ -67,6 +105,40 @@ const WageStack = createStackNavigator({
     },
 })
 
+WageStack.navigationOptions = ({ navigation }) => {
+
+    let tabBarVisible = true;
+    if (navigation.state.index > 0) {
+        tabBarVisible = false;
+    }
+    return ({
+        labeled: true,
+        tabBarLabel: ({ focused }) => focused ? <Text style={styles.text}>Lương</Text> : null,
+        tabBarIcon: ({ focused }) => (
+            <FontAwesome
+                name='money'
+                size={16}
+                color={focused ? BLUE_COLOR : '#D4D4D4'}
+                focused={focused}
+            />
+        ),
+        tabBarVisible,
+        tabBarOptions: {
+            showLabel: true,
+            upperCaseLabel: true,
+            inactiveTintColor: '#A4A4A4',
+            activeTintColor: '#007894',
+            inactiveBackgroundColor: 'white',
+            activeBackgroundColor: 'white',
+            style: {
+                paddingVertical: 0,
+                borderTopWidth: 1,
+                borderTopColor: 'rgba(242,242,242,.5)',
+            }
+        },
+    })
+};
+
 const PositionStack = createStackNavigator({
     PostionList: {
         screen: PositionListScreen
@@ -78,6 +150,39 @@ const PositionStack = createStackNavigator({
         screen: DetailPositionScreen
     },
 })
+
+PositionStack.navigationOptions = ({ navigation }) => {
+    let tabBarVisible = true;
+    if (navigation.state.index > 0) {
+        tabBarVisible = false;
+    }
+    return ({
+        labeled: true,
+        tabBarLabel: ({ focused }) => focused ? <Text style={styles.text}>Phòng ban</Text> : null,
+        tabBarIcon: ({ focused }) => (
+            <FontAwesome
+                name='group'
+                size={16}
+                color={focused ? BLUE_COLOR : '#D4D4D4'}
+                focused={focused}
+            />
+        ),
+        tabBarVisible,
+        tabBarOptions: {
+            showLabel: true,
+            upperCaseLabel: true,
+            inactiveTintColor: '#A4A4A4',
+            activeTintColor: '#007894',
+            inactiveBackgroundColor: 'white',
+            activeBackgroundColor: 'white',
+            style: {
+                paddingVertical: 0,
+                borderTopWidth: 1,
+                borderTopColor: 'rgba(242,242,242,.5)',
+            }
+        },
+    })
+};
 
 const LevelStack = createStackNavigator({
     LevelList: {
@@ -91,6 +196,45 @@ const LevelStack = createStackNavigator({
     },
 })
 
+const StatitcStack = createStackNavigator({
+    Statitic: {
+        screen: StatiticScreen
+    }
+})
+
+StatitcStack.navigationOptions = ({ navigation }) => {
+    let tabBarVisible = true;
+    if (navigation.state.index > 0) {
+        tabBarVisible = false;
+    }
+    return ({
+        labeled: true,
+        tabBarLabel: ({ focused }) => focused ? <Text style={styles.text}>Thống kê</Text> : null,
+        tabBarIcon: ({ focused }) => (
+            <Foundation
+                name='graph-pie'
+                size={20}
+                color={focused ? BLUE_COLOR : '#D4D4D4'}
+                focused={focused}
+            />
+        ),
+        tabBarVisible,
+        tabBarOptions: {
+            showLabel: true,
+            upperCaseLabel: true,
+            inactiveTintColor: '#A4A4A4',
+            activeTintColor: '#007894',
+            inactiveBackgroundColor: 'white',
+            activeBackgroundColor: 'white',
+            style: {
+                paddingVertical: 0,
+                borderTopWidth: 1,
+                borderTopColor: 'rgba(242,242,242,.5)',
+            }
+        },
+    })
+};
+
 const AccountStack = createStackNavigator({
     Account: {
         screen: AccountScreen,
@@ -100,13 +244,20 @@ const AccountStack = createStackNavigator({
     }
 })
 
+
+const styles = StyleSheet.create({
+    text: {
+        width: '100%',
+        textAlign: 'center',
+        color: BLUE_COLOR,
+    }
+})
+
 export default createBottomTabNavigator({
     Employee: EmployeeStack,
     Wage: WageStack,
-    Position: {
-        screen: PositionStack
-    },
+    Position: PositionStack,
     //LevelStack: LevelStack,
-    Statitic: StatiticScreen,
-    Account: AccountStack,
+    Statitic: StatitcStack,
+    //Account: AccountStack,
 })

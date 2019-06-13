@@ -6,9 +6,11 @@ import {
     StyleSheet,
     FlatList,
     TouchableOpacity,
-    Dimensions
+    Dimensions,
+    RefreshControl
 } from 'react-native'
 
+import { SearchBar } from './component'
 import NavigationService from '../route/NavigationService'
 import { luongApi } from '../api'
 const { width, height } = Dimensions.get('window')
@@ -21,9 +23,12 @@ export default class WageListScreen extends Component {
 
         this.state = {
             wages: [
-                { 'name': 'Nguyễn Văn A', 'position': 'Designer' },
-                { 'name': 'Nguyễn Văn B', 'position': 'Dev' }
-            ]
+                { 'BacLuong': 'Bậc 1', 'LuongCB': '40000' },
+                { 'BacLuong': 'Bậc 2', 'LuongCB': '70000' }
+            ],
+            searchText: '',
+            searchFilter: [],
+            isLoading: false
         }
     }
 
@@ -32,16 +37,34 @@ export default class WageListScreen extends Component {
     }
 
     loadData = () => {
-        luongApi.getListItem()
-            .then(list => {
-                this.setState({
-                    wages: list
+        this.setState({ isLoading: true }, () => {
+            luongApi.getListItem()
+                .then(list => {
+                    this.setState({
+                        wages: list,
+                        isLoading: false
+                    })
                 })
-            })
-            .catch(error => {
-                console.log(error)
-            })
+                .catch(error => {
+                    this.setState({
+                        isLoading: false
+                    })
+                    console.log(error)
+                })
+        })
     }
+
+    searchFilterFunction = text => {
+        const newData = this.state.wages.filter(item => {
+            const itemData = `${item.LuongCB}`;
+            const textData = text.toUpperCase();
+
+            return itemData.indexOf(textData) > -1;
+        });
+        console.log(newData)
+        this.setState({ searchFilter: newData });
+
+    };
 
     renderItem = ({ item, index }) => {
         if (index === 0)
@@ -70,8 +93,8 @@ export default class WageListScreen extends Component {
                     /> */}
                     <View style={{ flex: 1, height: '100%', justifyContent: 'space-between' }}>
                         <View />
-                        <Text>{item.BacLuong}</Text>
-                        <Text>{item.LuongCB}</Text>
+                        <Text style ={{color: 'black'}}>{item.BacLuong}</Text>
+                        <Text style ={{color: '#A4A4A4'}}>{item.LuongCB}</Text>
                         <View />
                     </View>
                 </View>
@@ -80,11 +103,26 @@ export default class WageListScreen extends Component {
     }
 
     render() {
-        const { wages } = this.state
+        const { wages, searchFilter, searchText } = this.state
         return (
             <SafeAreaView style={styles.container}>
+                <SearchBar
+                    inputStyle={{ backgroundColor: '#FAFAFA' }}
+                    onChangeText={(text) => {
+                        this.searchFilterFunction(text)
+                        this.setState({ searchText: text })
+                    }}
+                    value={this.state.searchText}
+                    onClear={() => this.setState({ searchText: '' })}
+                />
                 <FlatList
-                    data={[{ none: 0 }, ...wages]}
+                    refreshControl={
+                        <RefreshControl
+                            onRefresh={this.loadData}
+                            refreshing={this.state.isLoading}
+                        />
+                    }
+                    data={(searchText != '') ? [{ none: 0 }, ...searchFilter] : [{ none: 0 }, ...wages]}
                     keyExtractor={(item, index) => `${index}`}
                     renderItem={this.renderItem}
                 />

@@ -1,12 +1,13 @@
 import React from 'react'
-import { ScrollView, StyleSheet, View, Platform, Image, Text, SafeAreaView, StatusBar, Dimensions, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, View, Platform, Image, Text, SafeAreaView, StatusBar, Dimensions, TouchableOpacity, FlatList } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
 import NavigationService from '../route/NavigationService'
 
+import { ButtonOutline } from './component'
 const { width, height } = Dimensions.get('window')
 import { phongbanApi } from '../api'
-
+import _ from 'lodash'
 
 class DetailPositionScreen extends React.Component {
     constructor(props) {
@@ -15,6 +16,7 @@ class DetailPositionScreen extends React.Component {
             TenPB: 'Name',
             image: 'https://firebasestorage.googleapis.com/v0/b/HairSalon-beauty-app.appspot.com/o/Images%2Favocado-face-mask.jpg?alt=media&token=5bb4d5a4-924e-420f-a044-f7dd3a998622',
             position: 'position',
+            nhanvien: []
         };
     }
 
@@ -43,10 +45,13 @@ class DetailPositionScreen extends React.Component {
 
     loadData() {
         phongbanApi.detailItem(this.props.navigation.getParam('id'))
-            .then(position => {
+            .then(res => {
                 this.setState({
                     ...this.state,
-                    ...position[0]
+                    ...res.pb[0],
+                    nhanvien: [
+                        ...res.nv
+                    ]
                 })
             })
             .catch(error => {
@@ -54,12 +59,41 @@ class DetailPositionScreen extends React.Component {
             })
     }
 
+
+
+    renderItem = ({ item, index }) => {
+        return (
+            <TouchableOpacity
+                onPress={() => {
+                    NavigationService.navigate('DetailEmployee', {
+                        id: item._id
+                    })
+                }}
+                style={{ alignSelf: 'center' }}
+            >
+                <View style={[styles.displayInlineBlock, styles.card]}>
+                    {/* <Image 
+                        source = {require('')}
+                    /> */}
+                    <View style={{ flex: 1, height: '100%', justifyContent: 'space-between' }}>
+                        <View />
+                        <Text>{item.HoTen}</Text>
+                        <Text>{item.MaPB}</Text>
+                        <View />
+                    </View>
+                </View>
+            </TouchableOpacity >
+        )
+    }
+
+
     render() {
         const {
             id = '',
             TenPB = '',
             DiaChi = '',
             SDTPB = '',
+            nhanvien
         } = this.state
         const { image } = this.state
         return (
@@ -85,8 +119,19 @@ class DetailPositionScreen extends React.Component {
                                 Số điện thoại: {SDTPB || <Text style={{ fontStyle: 'italic' }}>(Chưa cập nhật)</Text>}
                             </Text>
                         </View>
-                        <View style={[styles.containerBody]}>
-                            <TouchableOpacity
+                        {!_.isEmpty(nhanvien) && <Text style={[styles.text, styles.textBold, { alignSelf: 'center', marginTop: 0, marginBottom: 0 }]}>
+                            Danh sách nhân viên
+                        </Text>}
+                        <FlatList
+                            contentContainerStyle={{ padding: 10 }}
+                            data={[...nhanvien]}
+                            keyExtractor={(item, index) => `${index}`}
+                            renderItem={this.renderItem}
+                        />
+                        <View style={[styles.containerBody, styles.displayInlineBlock, {justifyContent: 'space-around'}]}>
+                            <ButtonOutline
+                                width='40%'
+                                label={'CHỈNH SỬA'}
                                 onPress={() => {
                                     NavigationService.navigate('CreatePosition', {
                                         'NameHeader': 'Chỉnh sửa',
@@ -94,9 +139,7 @@ class DetailPositionScreen extends React.Component {
                                         'id': this.state._id
                                     })
                                 }}
-                            >
-                                <Text>Thêm</Text>
-                            </TouchableOpacity>
+                            />
                         </View>
                     </View>
                 </ScrollView>
@@ -159,7 +202,28 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 5,
         elevation: 3,
-    }
+    },
+    displayInlineBlock: {
+        flexWrap: 'wrap',
+        alignItems: 'flex-start',
+        flexDirection: 'row',
+    },
+    card: {
+        width: width * 0.9,
+        height: 70,
+        backgroundColor: 'white',
+        padding: 10,
+        borderRadius: 5,
+        marginVertical: 5,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 3,
+    },
 })
 
 export default DetailPositionScreen

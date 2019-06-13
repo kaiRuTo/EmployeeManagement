@@ -6,9 +6,11 @@ import {
     StyleSheet,
     FlatList,
     TouchableOpacity,
-    Dimensions
+    Dimensions,
+    RefreshControl
 } from 'react-native'
 
+import { SearchBar } from './component'
 import NavigationService from '../route/NavigationService'
 import { phongbanApi } from '../api'
 const { width, height } = Dimensions.get('window')
@@ -21,9 +23,12 @@ export default class PositionListScreen extends Component {
 
         this.state = {
             positions: [
-                { 'name': 'Nguyễn Văn A', 'position': 'Designer' },
-                { 'name': 'Nguyễn Văn B', 'position': 'Dev' }
-            ]
+                { 'TenPB': 'Phòng Tài chính', 'position': 'Tầng 4' },
+                { 'TenPB': 'Phòng Marketing', 'position': 'Tầng 2' }
+            ],
+            searchText: '',
+            searchFilter: [],
+            isLoading: false,
         }
     }
 
@@ -33,16 +38,33 @@ export default class PositionListScreen extends Component {
     }
 
     loadData = () => {
-        phongbanApi.getListItem()
-            .then(list => {
-                this.setState({
-                    positions: list
+        this.setState({ isLoading: true }, () => {
+            phongbanApi.getListItem()
+                .then(list => {
+                    this.setState({
+                        positions: list,
+                        isLoading: false
+                    })
                 })
-            })
-            .catch(error => {
-                console.log(error)
-            })
+                .catch(error => {
+                    this.setState({
+                        isLoading: false
+                    })
+                    console.log(error)
+                })
+        })
     }
+
+    searchFilterFunction = text => {
+        const newData = this.state.positions.filter(item => {
+            const itemData = `${item.TenPB.toUpperCase()}`;
+            const textData = text.toUpperCase();
+
+            return itemData.indexOf(textData) > -1;
+        });
+        console.log(newData)
+        this.setState({ searchFilter: newData });
+    };
 
     renderItem = ({ item, index }) => {
         if (index === 0)
@@ -71,8 +93,8 @@ export default class PositionListScreen extends Component {
                     /> */}
                     <View style={{ flex: 1, height: '100%', justifyContent: 'space-between' }}>
                         <View />
-                        <Text>{item.TenPB}</Text>
-                        <Text>{item.SDTPB}</Text>
+                        <Text style ={{color: 'black'}}>{item.TenPB}</Text>
+                        <Text style ={{color: '#A4A4A4'}}>{item.SDTPB}</Text>
                         <View />
                     </View>
                 </View>
@@ -81,11 +103,26 @@ export default class PositionListScreen extends Component {
     }
 
     render() {
-        const { positions } = this.state
+        const { positions, searchFilter, searchText } = this.state
         return (
             <SafeAreaView style={styles.container}>
+                <SearchBar
+                    inputStyle={{ backgroundColor: '#FAFAFA' }}
+                    onChangeText={(text) => {
+                        this.searchFilterFunction(text)
+                        this.setState({ searchText: text })
+                    }}
+                    value={this.state.searchText}
+                    onClear={() => this.setState({ searchText: '' })}
+                />
                 <FlatList
-                    data={[{ none: 0 }, ...positions]}
+                    refreshControl={
+                        <RefreshControl
+                            onRefresh={this.loadData}
+                            refreshing={this.state.isLoading}
+                        />
+                    }
+                    data={(searchText != '') ? [{ none: 0 }, ...searchFilter] : [{ none: 0 }, ...positions]}
                     keyExtractor={(item, index) => `${index}`}
                     renderItem={this.renderItem}
                 />

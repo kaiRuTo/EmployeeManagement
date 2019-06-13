@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Dimensions, SafeAreaView } from 'react-native'
 import numeral from 'numeral'
 import { PieChart } from 'react-native-chart-kit';
 import _ from 'lodash'
+import { thongKeApi } from '../api'
 
 const { width, height } = Dimensions.get('window')
 
@@ -34,21 +35,35 @@ class StatiticScreen extends React.Component {
 
         this.state = {
             total: 0,
-            service: [
+            employee: [
                 { name: 'abc', revenue: 30000 },
                 { name: 'abc', revenue: 4000 },
             ]
         }
     }
 
+    componentDidMount = () => {
+        thongKeApi.luong()
+            .then(res => {
+                this.setState({
+                    employee: _.map(res, function (item, index) {
+                        return { name: item.name, revenue: item.luong }
+                    })
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
     renderChar = () => {
-        const { service } = this.state
-        const sumAllNow = _.sumBy(service, 'revenue')
+        const { employee } = this.state
+        const sumAllNow = _.sumBy(employee, 'revenue')
         var lesSumAllNow = sumAllNow
         return (
             <View>
                 <PieChart
-                    data={_.map(service.slice(0, 7), function(item, index) {
+                    data={_.map(employee.slice(0, 7), function (item, index) {
                         if (index == 6)
                             return {
                                 'name': 'Còn lại',
@@ -83,8 +98,8 @@ class StatiticScreen extends React.Component {
             <SafeAreaView style={styles.container}>
                 <View style={styles.card}>
                     <View style={{ alignItems: 'center', marginTop: 20 }}>
-                        <Text style={{ fontSize: 16, }}>Tổng lương</Text>
-                        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{numeral(total).format('0,0')} đ</Text>
+                        <Text style={{ fontSize: 16, color: 'black' }}>Tổng lương</Text>
+                        <Text style={{ fontSize: 16, color: 'black', fontWeight: 'bold' }}>{numeral(_.sumBy(this.state.employee, 'revenue')).format('0,0')} đ</Text>
                     </View>
                 </View>
                 <View style={styles.card}>
@@ -110,7 +125,6 @@ const styles = StyleSheet.create({
     },
     card: {
         width: width * 0.9,
-        height: 70,
         backgroundColor: 'white',
         padding: 10,
         borderRadius: 5,

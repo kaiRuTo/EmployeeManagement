@@ -4,6 +4,7 @@ import * as phongbanApi from './phongban'
 import * as chucvuApi from './chucvu'
 import * as hopdonglaodongApi from './hopdonglaodong'
 import * as trinhdohocvanApi from './trinhdohocvan'
+import * as thongKeApi from './thongKeApi'
 
 
 export {
@@ -12,5 +13,6 @@ export {
     phongbanApi,
     chucvuApi,
     hopdonglaodongApi,
-    trinhdohocvanApi
+    trinhdohocvanApi,
+    thongKeApi
 }
